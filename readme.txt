@@ -56,14 +56,15 @@ All we need is your support :) Any feedback is welcomed.
 
 == Installation ==
 
-Minimum requirements
+## Minimum requirements
 * WordPress 3.8 or greater
 * PHP version 5.2 or greater
 * MySQL version 5.0 or greater
 * WP Cron enabled in your WordPress installation
 
-Installation
+## Installation
 There are two ways to install Tweet Wheel
+
 ### via WordPress plugin upload - automated
 Navigate to Plugins > Upload New Plugin and upload the zip file you have downloaded. Voilla!
 
@@ -78,7 +79,6 @@ None yet. Feel free to ask them though and we will update this section.
 
 == Screenshots ==
 
-1. Twitter authorisation page. Requires Twitter App created with READ and WRTIE permissions. Plugin needs to be authorised to show the rest plugin's pages (settings & queue).
 2. General settings screen.
 3. The queue. Very controlable and customisable. You can shuffle tweets, tweet them on go, pause / resume the queue. Just check it out!
 
