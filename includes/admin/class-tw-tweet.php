@@ -160,8 +160,6 @@ class TW_Tweet {
             
             do_action( 'tw_tweet_error', $post_id, $response );
 
-            wp_mail( 'tomasz@nerdcow.co.uk', 'Tweet Wheel couldn\'t send a tweet', json_encode( $response ) );
-
             return false;
             
         endif;

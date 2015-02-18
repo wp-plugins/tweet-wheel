@@ -90,9 +90,7 @@ class TW_Twitter {
             endif;
             
         } catch ( Exception $e ) {
-            
-            //echo '<pre>' . print_r( $e, true ) . '</pre>';
-            
+
             echo "There was an error returned by Twitter. Not your fault, though. Try again.";
             
         }
