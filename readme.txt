@@ -79,8 +79,8 @@ None yet. Feel free to ask them though and we will update this section.
 
 == Screenshots ==
 
-2. General settings screen.
-3. The queue. Very controlable and customisable. You can shuffle tweets, tweet them on go, pause / resume the queue. Just check it out!
+1. General settings screen.
+2. The queue. Very controlable and customisable. You can shuffle tweets, tweet them on go, pause / resume the queue. Just check it out!
 
 == Changelog ==
 
