@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: nerdcow
-Tags: twitter, tweet, cron, tweeting, automated tweeting, blog, post, blogging
+Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversions
 Requires at least: 3.8
 Tested up to: 4.1
 Stable tag: trunk
