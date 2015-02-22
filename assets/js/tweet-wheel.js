@@ -1,43 +1,45 @@
 $ = jQuery.noConflict();
 
-$('#tweet-preview').focus(function(e){
-    e.preventDefault();
-})
+/**
+ * Custom Tweet Metabox Counter and Parsing
+ * @since 0.1
+ * @updated 21.02.2015
+ */
 
-maxCharacters = 140;
+if( pagenow == 'post' ) {
 
-$(document).on('load keyup','#tweet_text-cmb-field-0', function(e) {
+    // Count characters and display on page load
+    $(window).load(function(){
     
-    var tweet_template = $(this).val();
+        $('#count').text( tw_character_counter( $('#tweet_text-cmb-field-0').val() ) );
     
-    //list of functional/control keys that you want to allow always
-    var keys = [8, 9, 16, 17, 18, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 144, 145];
-    if( $.inArray(e.keyCode, keys) == -1) {
-        if (checkMaxLength (tweet_template, maxCharacters)) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        }
-    }
-    
-    if( tweet_template.indexOf("{{URL}}") > -1 ) {
-        maxCharacters = 147;
-    } else {
-        maxCharacters = 140;
-    }
-    
-    var count = $('#count');
-    var characters = $('#tweet-preview').val().length;
+    });
 
-    count.text(maxCharacters - characters);
-
-    tweet_template = tweet_template.replace("{{URL}}", post_url );
-    tweet_template = tweet_template.replace("{{TITLE}}", post_title );
-    $('#tweet-preview').val( tweet_template );
-    $( '.autoresize' ).autosize();   
+    // Handle custom tweet text box input and update counter
+    $(document).on('keyup keydown','#tweet_text-cmb-field-0', function(e) {
     
-} );
+        // ...
+    
+        $('#count').text( tw_character_counter( $(this).val() ) );
+    
+        // ...
+    
+        $(this).val( $(this).val().replace("{{URL}}", post_url ) );
+        $(this).val( $(this).val().replace("{{TITLE}}", post_title ) );
+    
+        // ...
+    
+        $('#tweet-preview').text( $(this).val() ); 
 
+    } );
+
+}
+
+/*
+
+
+
+*/
 
 $(function() {
     $( "#the-queue ul" ).sortable({
@@ -83,10 +85,10 @@ $(function() {
             
             $('#change-queue-status').removeClass('disabled')
             
-            if( response == 0 ) {
+            if( response == 'paused' ) {
                 $('#change-queue-status').text('Resume');
                 $('#queue-status').text( 'Status: Paused' );
-            } else if( response == 1 ) {
+            } else if( response == 'running' ) {
                 $('#change-queue-status').text('Pause');
                 $('#queue-status').text( 'Status: Running' );
             } else {
@@ -122,6 +124,8 @@ $(function() {
         $.post( ajaxurl, { action: 'tweet', post_id : el.data('post-id') }, function( response ) {
             
             var data = $.parseJSON( response );
+            
+            console.log( data );
             
             if( data.response == "error" ) {
                 
@@ -177,6 +181,52 @@ $(function() {
     
 } );
 
-function checkMaxLength (text, max) {
-    return (text.length >= max);
+function tw_character_counter( raw ) {
+    
+    // Max characters accepted for a single tweet
+    maxCharacters = 140;
+    
+    // Load custom tweet text to a variable
+    var tweet_template = raw;
+    
+    // ...
+
+    tweet_template = tweet_template.replace("{{URL}}", post_url );
+    tweet_template = tweet_template.replace("{{TITLE}}", post_title );
+    
+    /**
+     * Calculate a whole string length
+     */
+    var current_length = 0;
+    current_length = tweet_template.length;
+
+    // ...
+    
+    /**
+     * Amend character limit if URL is detected (22 characters per url)
+     */
+    
+    var url_chars = 22;
+
+    // urls will be an array of URL matches
+    var urls = tweet_template.match(/(?:(?:https?|ftp):\/\/)?(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/?[^\s]*)?/g);
+    
+    // If urls were found, play the max character value accordingly
+    if( urls != null ) {
+        
+        for (var i = 0, il = urls.length; i < il; i++) {
+            
+            // get url length difference
+            var diff = url_chars - urls[i].length;
+            
+            // apply difference
+            current_length += diff;
+            
+        }
+        
+    }
+    
+    // return actually tweet length
+    return current_length;
+    
 }
