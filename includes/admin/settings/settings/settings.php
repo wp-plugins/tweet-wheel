@@ -57,7 +57,7 @@ function wpsf_settings( $wpsf_settings ) {
             array(
                 'id' => 'post_interval',
                 'title' => 'Publish Interval (Minutes)',
-                'desc' => 'Please provide an interval between each time Tweet Wheel should send next post to your Twitter wall. Minimum 60 minutes.',
+                'desc' => 'Please provide an interval between each time Tweet Wheel should send next post to your Twitter wall. Minimum 15 minutes.',
                 'type' => 'text',
                 'placeholder' => 'eg. 60, 200, 360...'
             ),

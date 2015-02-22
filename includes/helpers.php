@@ -2,7 +2,23 @@
 
 /**
  * Helpers
+ * 
+ * This files consists of functions helping with managing settings framework.
+ * Anything to do with options is here...
  */
+
+// ...
+
+/**
+ * Retrieves an option group
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return array
+ **/
 
 if( !function_exists('wpsf_get_option_group') ){
     /**
@@ -17,6 +33,19 @@ if( !function_exists('wpsf_get_option_group') ){
     }
 }
 
+// ...
+
+/**
+ * Retrieves settings from an option group
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return array
+ **/
+
 if( !function_exists('wpsf_get_settings') ){
     /**
      * Get the settings from a settings file/option group
@@ -28,6 +57,19 @@ if( !function_exists('wpsf_get_settings') ){
         return get_option( $option_group .'_settings' );
     }
 }
+
+// ...
+
+/**
+ * Retrieves a single setting
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return string | int | array | ...
+ **/
 
 if( !function_exists('wpsf_get_setting') ){
     /**
@@ -47,6 +89,19 @@ if( !function_exists('wpsf_get_setting') ){
     }
 }
 
+// ...
+
+/**
+ * Deletes settings from an option group
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return N/A
+ **/
+
 if( !function_exists('wpsf_delete_settings') ){
     /**
      * Delete all the saved settings from a settings file/option group
@@ -57,6 +112,19 @@ if( !function_exists('wpsf_delete_settings') ){
         delete_option( $option_group .'_settings' );
     }
 }
+
+// ...
+
+/**
+ * Updates settings in an option group
+ *
+ * @type function
+ * @date 30/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return false or int | string | array | ...
+ **/
 
 if( !function_exists('wpsf_update_settings') ){
     /**

@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: nerdcow
-Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversions
+Tags: twitter, tweet, cron, tweeting, automated tweeting, blog, post, blogging
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: trunk
+Stable tag: 0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,20 @@ None yet. Feel free to ask them though and we will update this section.
 2. The queue. Very controlable and customisable. You can shuffle tweets, tweet them on go, pause / resume the queue. Just check it out!
 
 == Changelog ==
+
+= 0.2 =
+* Forced a tweet length to 140 characters and ditched anything after the limit
+* Fixed characters counter on the post edit screen - it now properly calculates a link length
+* Fixed pausing and resuming the queue
+* Prevented a queue item duplication after post's title has changed
+* Replaced drag icon with an image to improve it's displaying across all browsers
+* Fixed character encoding in the tweet preview on the post edit screen
+* Fixed character encoding for sent tweets
+
+* Wording has been amended in a few places
+* Decreased WP Cron interval from 1 hour to 15 minutes to improve accuracy
+* Added a preview of recently tweeted tweet at the top of the queue
+* Done some code cleanings
 
 = 0.1 =
 * Initial release
