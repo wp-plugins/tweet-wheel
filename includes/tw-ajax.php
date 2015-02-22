@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * This files consists of all AJAX related functions.
+ * They are called from all over the place. Mainly classes.
+ * Most of them are simple wrappers around class methods.
+ */
+
+/**
+ * Handles saving of the queue. Saves posts in a new order.
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return string
+ **/
+
 function ajax_save_queue() {
 
     // Dump the current queue in case something goes wrong...
@@ -29,22 +46,48 @@ function ajax_save_queue() {
     
 }
 
+// ...
+
+/**
+ * When a queue is empty, it shows an admin notification. This allows to hide it for a week.
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return N/A
+ **/
+
 function ajax_hide_empty_queue_alert() {
     
     set_transient( '_tw_empty_queue_alert_' . get_current_user_id(), 'hide', 60*60*24*7 ); // hide for a week
     
 }
 
+// ...
+
+/**
+ * Resumes or pauses the queue. Used by WP Cron.
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return string
+ **/
+
 function ajax_change_queue_status() {
 
     $status = TW()->queue()->get_queue_status();
     
-    if( $status == 0 ) :
+    if( $status == "paused" ) :
         TW()->queue()->resume();
         echo TW()->queue()->get_queue_status(); exit;
     endif;
     
-    if( $status == 1 ) :
+    if( $status == "running" ) :
         TW()->queue()->pause();
         echo TW()->queue()->get_queue_status(); exit;
     endif;
@@ -53,6 +96,19 @@ function ajax_change_queue_status() {
     exit;
     
 }
+
+// ...
+
+/**
+ * Removes a single post from the queue. Nice and easy ;)
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return json
+ **/
 
 function ajax_remove_from_queue() {
     
@@ -65,6 +121,19 @@ function ajax_remove_from_queue() {
     exit;
     
 }
+
+// ...
+
+/**
+ * Sends a tweet.
+ *
+ * @type function
+ * @date 28/01/2015
+ * @since 0.1
+ *
+ * @param N/A
+ * @return json
+ **/
 
 function ajax_tweet() {
     
