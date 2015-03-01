@@ -11,6 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Automated and redefined post tweeting for every Wordpress blog.
 
 == Description ==
+
 ## If there is one desire of every blogger, it is the exposure.
 
 Tweet Wheel is a simple and yet powerful tool that every blogger will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from user's blog and take the burden off bloggers' shoulders and let them focus on the thing they are best at - writing.
