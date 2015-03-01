@@ -32,10 +32,8 @@ class TW_Dashboard {
         
     }
     
-    public function page() {
-        
-        tw_load_settings();
-        
+    public static function page() {
+
         ?>
         
 		<div class="wrap tweet-wheel about-wrap">

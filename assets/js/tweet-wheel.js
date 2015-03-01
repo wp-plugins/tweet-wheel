@@ -113,6 +113,10 @@ $(function() {
 
 $(function() {
     
+    /**
+     * Tweet Now available on the Queue screen
+     */
+    
     $('.tweet-now').click(function(e){
        
         e.preventDefault();
@@ -138,6 +142,66 @@ $(function() {
             } else {
                 
                 $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp();
+                
+            }
+            
+        } );
+        
+    });
+    
+    // ...
+    
+    $('.tw-dequeue-post').on('click',function(e){
+       
+        e.preventDefault();
+        
+        var el = $(this);
+        
+        el.text('Dequeuing...');
+        
+        $.post( ajaxurl, { action: 'remove_from_queue', post_id : el.data('post-id') }, function( response ) {
+            
+            var data = $.parseJSON( response );
+            
+            if( data.response == "error" ) {
+                
+                el.replaceWith('<a href="#" style="color:#a00" class="tw-dequeue-post" data-post-id="'+el.data('post-id')+'">Dequeue</a>');
+                
+                alert( 'We couldn\'t remove your tweet... Not sure why. Try excluding it in the post edit screen.' );
+                
+            } else {
+                
+                el.replaceWith('<a href="#" class="tw-queue-post" data-post-id="'+el.data('post-id')+'">Queue</a>');
+                
+            }
+            
+        } );
+        
+    });
+    
+    // ...
+    
+    $('.tw-queue-post').on('click',function(e){
+       
+        e.preventDefault();
+        
+        var el = $(this);
+        
+        el.text('Queuing...');
+        
+        $.post( ajaxurl, { action: 'add_to_queue', post_id : el.data('post-id') }, function( response ) {
+            
+            var data = $.parseJSON( response );
+            
+            if( data.response == "error" ) {
+                
+                el.replaceWith('<a href="#" class="tw-queue-post" data-post-id="'+el.data('post-id')+'">Queue</a>');
+                
+                alert( 'We couldn\'t queue your tweet... Not sure why. Try excluding it in the post edit screen.' );
+                
+            } else {
+                
+                el.replaceWith('<a href="#" style="color:#a00" class="tw-dequeue-post" data-post-id="'+el.data('post-id')+'">Dequeue</a>');
                 
             }
             
@@ -171,7 +235,7 @@ $(function() {
                 
             } else {
                 
-                $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp();
+                $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
                 
             }
             

@@ -1,9 +1,10 @@
 === Plugin Name ===
-Contributors: nerdcow
+Contributors: NerdCow
 Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic
 Requires at least: 3.8
 Tested up to: 4.1
 Stable tag: 0.2
+Donate: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

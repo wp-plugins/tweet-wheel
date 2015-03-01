@@ -122,9 +122,10 @@ final class TweetWheel {
         
         // Hooks
         register_activation_hook( __FILE__, 'tw_install' );
-        register_activation_hook( __FILE__, 'tw_load_settings' );
         register_activation_hook( __FILE__, 'tw_after_activate' );
         add_action( 'admin_init', array( $this, 'redirect' ) );
+        
+        register_uninstall_hook( __FILE__, 'tw_uninstall' );
         
         add_action( 'init', array( $this, 'init' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
@@ -150,13 +151,21 @@ final class TweetWheel {
     private function constants() {
         
         // Plugin Version
-        define( 'TW_VERSION', $this->version );
+        if( ! defined( 'TW_VERSION' ) )
+            define( 'TW_VERSION', $this->version );
         
         // Paths
-        define( 'TW_PLUGIN_FILE', __FILE__ );
-        define( 'TW_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-        define( 'TW_PLUGIN_DIR', dirname( __FILE__ ) );
-        define( 'TW_PLUGIN_URL', plugins_url( '/tweet-wheel' ) );
+        if( ! defined( 'TW_PLUGIN_FILE' ) )
+            define( 'TW_PLUGIN_FILE', __FILE__ );
+        
+        if( ! defined( 'TW_PLUGIN_BASENAME' ) )
+            define( 'TW_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+        
+        if( ! defined( 'TW_PLUGIN_DIR' ) )
+            define( 'TW_PLUGIN_DIR', dirname( __FILE__ ) );
+        
+        if( ! defined( 'TW_PLUGIN_URL' ) )
+            define( 'TW_PLUGIN_URL', plugins_url( '/tweet-wheel' ) );
         
     }
     
@@ -177,6 +186,7 @@ final class TweetWheel {
         
         // initial stuff
         include_once( 'includes/install.php' );
+        include_once( 'includes/uninstall.php' );
         include_once( 'includes/helpers.php' );
         
         // Fundamental settings

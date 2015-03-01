@@ -70,6 +70,9 @@ class TW_Tweet {
         
         // Metabox framework doesn't pass post id and its an admin area
         // so i decide to go for the most basic solution...
+        if( ! isset( $_GET['post'] ) )
+            return;
+        
         $id = $_GET['post'];
 
         $html = '<div class="mb-tweet-preview">
@@ -267,8 +270,6 @@ class TW_Tweet {
         $response = $connection->post( "statuses/update", array( "status" => $tweet ) );
 
         if( is_array( $response->errors ) ) :
-            
-            update_option( 'tw_error', $response->errors );
             
             do_action( 'tw_tweet_error', $post_id, $response );
 

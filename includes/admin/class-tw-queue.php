@@ -31,8 +31,11 @@ class TW_Queue {
         // Add admin menu
         add_filter( 'tw_load_admin_menu', array( $this, 'menu' ) );
         
-        // Add some post actions to the post list
-        add_filter( 'post_row_actions', array( $this, 'post_row_action' ), 10, 2);
+        // Add some post actions to the post list screen
+        add_filter( 'post_row_actions', array( $this, 'post_row_queue' ), 10, 2);
+        add_filter( 'admin_footer-edit.php', array( $this, 'bulk_queue_option' ) );
+        add_action( 'load-edit.php', array( $this, 'bulk_queue' ) );
+        add_action( 'admin_notices', array( $this, 'bulk_queue_admin_notice' ) );
         
         // Add 15 minutes cron job
         add_filter( 'cron_schedules', array( $this, 'cron_add_every_fifteen_minutes' ) );
@@ -46,6 +49,7 @@ class TW_Queue {
         add_action( 'wp_ajax_empty_queue_alert', 'ajax_hide_empty_queue_alert' );
         add_action( 'wp_ajax_change_queue_status', 'ajax_change_queue_status' );
         add_action( 'wp_ajax_remove_from_queue', 'ajax_remove_from_queue' );
+        add_action( 'wp_ajax_add_to_queue', 'ajax_add_to_queue' );
         
         // CRON
         add_action( 'wp', array( $this, 'cron' ) );
@@ -273,7 +277,30 @@ class TW_Queue {
         
     }
     
-    public function post_row_action( $actions, $post ) {
+    public function exclude_post( $post_id ) {
+        
+        $this->remove_post( $post_id );
+        
+        $excluded = array( 0 => 1 );
+        $excluded = array_shift( $excluded );
+
+        update_post_meta( $post_id, 'post_exclude', $excluded );
+        
+        return true;
+        
+    }
+    
+    public function include_post( $post_id ) {
+        
+        $excluded = array();
+
+        update_post_meta( $post_id, 'post_exclude', $excluded );
+        
+        return true;
+        
+    }
+    
+    public function post_row_queue( $actions, $post ) {
         
         //check for your post type
         if ( $post->post_type == "post" && $post->post_status == "publish" ) :
@@ -284,11 +311,11 @@ class TW_Queue {
             
             else if( $this->is_item_queued( $post->ID ) ) :
                 
-                $actions['dequeue'] = '<a style="color:#a00"  href="'.admin_url('/edit.php?tw_dequeue=' . $post->ID).'">Dequeue</a>';
+                $actions['dequeue'] = '<a class="tw-dequeue-post" style="color:#a00" data-post-id="'.$post->ID.'">Dequeue</a>';
                 
             else :
                 
-                $actions['queue'] = '<a href="'.admin_url('/edit.php?tw_queue=' . $post->ID).'">Queue</a>';
+                $actions['queue'] = '<a class="tw-queue-post" href="#" data-post-id="'.$post->ID.'">Queue</a>';
                 
             endif;
             
@@ -296,6 +323,134 @@ class TW_Queue {
         
         return $actions;
         
+    }
+    
+    public function bulk_queue_option() {
+        
+        global $post_type;
+ 
+          if($post_type == 'post') {
+            ?>
+            <script type="text/javascript">
+              jQuery(document).ready(function() {
+                  jQuery('<option>').val('queue').text('<?php _e('Queue')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('queue').text('<?php _e('Queue')?>').appendTo("select[name='action2']");
+                  jQuery('<option>').val('dequeue').text('<?php _e('Dequeue')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('dequeue').text('<?php _e('Dequeue')?>').appendTo("select[name='action2']");
+                  jQuery('<option>').val('exclude').text('<?php _e('Exclude')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('exclude').text('<?php _e('Exclude')?>').appendTo("select[name='action2']");
+              });
+            </script>
+            <?php
+          }
+        
+    }
+    
+    public function bulk_queue() {
+
+        // 1. get the action
+        $wp_list_table = _get_list_table('WP_Posts_List_Table');
+        $action = $wp_list_table->current_action();
+        
+		if(isset($_REQUEST['post'])) {
+			$post_ids = array_map('intval', $_REQUEST['post']);
+		}
+		
+        if(empty($post_ids)) return;
+        
+        // 2. security check
+        check_admin_referer('bulk-posts');
+
+        switch($action) {
+
+        // 3. Perform the action
+        case 'queue':
+
+            $queued = 0;
+
+            foreach( $post_ids as $post_id ) {
+                if ( $this->include_post( $post_id ) && $this->insert_post($post_id) )
+                    $queued++;
+            }
+
+            // build the redirect url
+            $sendback = add_query_arg( array('queued' => $queued ), $sendback );
+
+            break;
+
+        case 'dequeue':
+            
+            $dequeued = 0;
+
+            foreach( $post_ids as $post_id ) {
+                if ( $this->remove_post($post_id) )
+                    $dequeued++;
+            }
+
+            // build the redirect url
+            $sendback = add_query_arg( array('dequeued' => $dequeued ), $sendback );
+            
+            break;
+            
+        case 'exclude':
+            
+            $excluded = 0;
+
+            foreach( $post_ids as $post_id ) {
+                if ( $this->exclude_post($post_id) )
+                    $excluded++;
+            }
+
+            // build the redirect url
+            $sendback = add_query_arg( array('excluded' => $excluded ), $sendback );
+            
+            break;
+
+        default: return;
+
+        }
+
+        // ...
+
+        // 4. Redirect client
+        wp_redirect($sendback);
+
+        exit();
+        
+    }
+    
+    public function bulk_queue_admin_notice() {
+ 
+      global $post_type, $pagenow;
+ 
+      // Posts queued
+ 
+      if($pagenow == 'edit.php' && $post_type == 'post' &&
+         isset($_REQUEST['queued']) && (int) $_REQUEST['queued']) {
+        $message = sprintf( _n( 'Post queued.', '%s posts queued.', $_REQUEST['queued'] ), number_format_i18n( $_REQUEST['queued'] ) );
+        echo '<div class="updated"><p>' . $message . '</p></div>';
+      }
+      
+      // ...
+      
+      // Posts dequeued
+      
+      if($pagenow == 'edit.php' && $post_type == 'post' &&
+         isset($_REQUEST['dequeued']) && (int) $_REQUEST['dequeued']) {
+        $message = sprintf( _n( 'Post dequeued.', '%s posts dequeued.', $_REQUEST['dequeued'] ), number_format_i18n( $_REQUEST['dequeued'] ) );
+        echo '<div class="updated"><p>' . $message . '</p></div>';
+      }
+      
+      // ...
+      
+      // Posts excluded
+      
+      if($pagenow == 'edit.php' && $post_type == 'post' &&
+         isset($_REQUEST['excluded']) && (int) $_REQUEST['excluded']) {
+        $message = sprintf( _n( 'Post excluded.', '%s posts excluded.', $_REQUEST['excluded'] ), number_format_i18n( $_REQUEST['excluded'] ) );
+        echo '<div class="updated"><p>' .$message .'</p></div>';
+      }
+      
     }
     
     public function display_queued_items() {

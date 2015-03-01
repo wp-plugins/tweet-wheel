@@ -125,6 +125,31 @@ function ajax_remove_from_queue() {
 // ...
 
 /**
+ * Adds a single post to the queue. Nice and easy ;)
+ *
+ * @type function
+ * @date 01/03/2015
+ * @since 0.3
+ *
+ * @param N/A
+ * @return json
+ **/
+
+function ajax_add_to_queue() {
+    
+    if( TW()->queue()->insert_post( $_POST['post_id'] ) ) :
+        echo json_encode( array( 'response' => 'OK' ) );
+        exit;
+    endif;
+    
+    echo json_encode( array( 'response' => 'error' ) );
+    exit;
+    
+}
+
+// ...
+
+/**
  * Sends a tweet.
  *
  * @type function

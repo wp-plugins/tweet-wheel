@@ -31,7 +31,7 @@ $tw_db_version = '1.0';
 function tw_install() {
     
     global $wpdb;
-    global $tw_db_version;
+    
     
     $table_name = $wpdb->prefix . 'tw_queue';
     
@@ -48,8 +48,8 @@ function tw_install() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
 
-    // Store table version as an option for later comparison
-	add_option( 'tw_db_version', $tw_db_version );
+    // Load default settings
+    tw_load_settings();
     
 }
 
@@ -68,6 +68,8 @@ function tw_install() {
 
 function tw_load_settings() {
     
+    global $tw_db_version;
+    
     $default = array(
         'tw_settings_global_queue_new_post' => 0,
         'tw_settings_template_tweet_text' => '{{TITLE}} - {{URL}}',
@@ -75,8 +77,9 @@ function tw_load_settings() {
         'tw_settings_timing_loop' => 1
     );
     
-    add_option( 'tw_queue_status', 'running' );
+    add_option( 'tw_queue_status', 'paused' );
     add_option( 'tw_settings_settings', $default );
+    add_option( 'tw_db_version', $tw_db_version );
     
 }
 
