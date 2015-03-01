@@ -12,7 +12,7 @@ Automated and redefined post tweeting for every Wordpress blog.
 
 == Description ==
 
-## If there is one desire of every blogger, it is the exposure.
+**If there is one desire of every blogger, it is the exposure.**
 
 Tweet Wheel is a simple and yet powerful tool that every blogger will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from user's blog and take the burden off bloggers' shoulders and let them focus on the thing they are best at - writing.
 
@@ -49,13 +49,14 @@ Comment on your blog, reply to blog-related tweets and more. Leave the rest to T
 
 == Installation ==
 
-## Minimum requirements
+**Minimum requirements**
+
 * WordPress 3.8 or greater
 * PHP version 5.2 or greater
 * MySQL version 5.0 or greater
 * WP Cron enabled in your WordPress installation
 
-## There are two ways to install Tweet Wheel
+There are two ways to install Tweet Wheel
 
 ### via WordPress plugin upload - automated
 Navigate to Plugins > Upload New Plugin and upload the zip file you have downloaded. Voilla!
