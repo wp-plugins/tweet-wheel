@@ -7,13 +7,13 @@ class TW_Queue {
     // ...
     
 	/**
-	 * Main TweetWheel Twitter Instance
+	 * Main TW_Queue Instance
 	 *
-	 * Ensures only one instance of TweetWheel Twitter is loaded or can be loaded.
+	 * Ensures only one instance of TW_Queue is loaded or can be loaded.
 	 *
 	 * @since 0.1
 	 * @static
-	 * @return TweetWheel - Main instance
+	 * @return TW_Queue object
 	 */
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -21,6 +21,15 @@ class TW_Queue {
 		}
 		return self::$_instance;
 	}
+    
+    // ...
+    
+	/**
+	 * TW_Queue _construct
+     *
+	 * @since 0.1
+	 * @return n/a
+	 */
     
     public function __construct() {
         
@@ -77,6 +86,17 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+    // ...
+    
+	/**
+	 * Adds "Queue" item to the Tweet Wheel menu tab
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
+    
     public function menu( $menu ) {
         
         $menu[] = array(
@@ -89,6 +109,15 @@ class TW_Queue {
         return $menu;
         
     }
+    
+    // ...
+    
+	/**
+	 * Loads the Queue screen
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
     
     public function page() {
         
@@ -122,6 +151,15 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Admin notice showed when queue is empty
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
+    
     public function alert_empty_queue() {
         ?>
         <div class="error tw-empty-queue-alert">
@@ -130,7 +168,18 @@ class TW_Queue {
         <?php
     }
     
+    // ...
+    
+	/**
+	 * Toolbar for each item in the queue
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
+    
     public function item_tools( $post_id ) {
+        
+        $item_tools = array();
         
         $item_tools = apply_filters( 
             'tw_queue_item_tools', 
@@ -186,6 +235,15 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Queue tools / buttons
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
+    
     public function tools() {
 
         ?>
@@ -211,6 +269,17 @@ class TW_Queue {
         <?php
         
     }
+    
+    // ...
+    
+	/**
+	 * Fills up the queue with ALL blog posts
+     * 
+     * @TODO: give user a bit more control over it
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
     
     public function fill_up( $data = null ) {
         
@@ -241,6 +310,16 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Inserts a post to the queue. Performs checks for duplication and exclusion. 
+     * The check be skipped giving "true" as a value for last two parameters.
+	 *
+	 * @since 0.1
+	 * @return WP Insert | false
+	 */
+    
     public function insert_post( $post_id, $skip_queue = false, $skip_exclusion = false ) {
         
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
@@ -256,7 +335,7 @@ class TW_Queue {
         $result = $wpdb->insert(
             $wpdb->prefix . 'tw_queue',
             array(
-                'queue' => $this->get_last_queued()->queue+1,
+                'queue' => $this->get_last_queued()+1,
                 'post_ID' => $post_id
             )
         );
@@ -264,6 +343,15 @@ class TW_Queue {
         return $result;
         
     }
+    
+    // ...
+    
+	/**
+	 * Removes post from the queue
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
     
     public function remove_post( $post_id, $skip = false ) {
         
@@ -276,6 +364,15 @@ class TW_Queue {
         return $result;
         
     }
+    
+    // ...
+    
+	/**
+	 * Excludes a post from the queue (and removes if exists)
+	 *
+	 * @since 0.3
+	 * @return boolean
+	 */
     
     public function exclude_post( $post_id ) {
         
@@ -290,6 +387,15 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Unchecks the Post Exclude option (doesn't insert a post)
+	 *
+	 * @since 0.3
+	 * @return boolean
+	 */
+    
     public function include_post( $post_id ) {
         
         $excluded = array();
@@ -299,6 +405,16 @@ class TW_Queue {
         return true;
         
     }
+    
+    // ...
+    
+	/**
+	 * Adds an action to posts on the edit.php screen
+	 *
+	 * @since 0.1
+     * @update 0.3
+	 * @return n/a
+	 */
     
     public function post_row_queue( $actions, $post ) {
         
@@ -325,6 +441,15 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Injects options to Bulk Actions dropdown on the edit.php screen
+	 *
+	 * @since 0.3
+	 * @return n/a
+	 */
+    
     public function bulk_queue_option() {
         
         global $post_type;
@@ -333,18 +458,28 @@ class TW_Queue {
             ?>
             <script type="text/javascript">
               jQuery(document).ready(function() {
-                  jQuery('<option>').val('queue').text('<?php _e('Queue')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('queue').text('<?php _e('Queue')?>').appendTo("select[name='action2']");
-                  jQuery('<option>').val('dequeue').text('<?php _e('Dequeue')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('dequeue').text('<?php _e('Dequeue')?>').appendTo("select[name='action2']");
-                  jQuery('<option>').val('exclude').text('<?php _e('Exclude')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('exclude').text('<?php _e('Exclude')?>').appendTo("select[name='action2']");
+                  jQuery("select[name='action']").append('<option disabled></option><option disabled>Tweet Wheel</option>');
+                  jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action2']");
+                  jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action2']");
+                  jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action2']");
               });
             </script>
             <?php
           }
         
     }
+    
+    // ...
+    
+	/**
+	 * Handles bulk actions
+	 *
+	 * @since 0.3
+	 * @return n/a
+	 */
     
     public function bulk_queue() {
 
@@ -419,6 +554,15 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Display relevant notice after a bulk action has been performed
+	 *
+	 * @since 0.3
+	 * @return n/a
+	 */
+    
     public function bulk_queue_admin_notice() {
  
       global $post_type, $pagenow;
@@ -452,6 +596,15 @@ class TW_Queue {
       }
       
     }
+    
+    // ...
+    
+	/**
+	 * Displays the queue of items
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
     
     public function display_queued_items() {
         
@@ -499,6 +652,15 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Empties the queue
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
+    
     public function remove_all() {
         
         global $wpdb;
@@ -507,11 +669,29 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+	/**
+	 * Pauses the queue
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
+    
     public function pause() {
         
         update_option( 'tw_queue_status', 'paused' );
         
     }
+    
+    // ...
+    
+	/**
+	 * Resumes the queue
+	 *
+	 * @since 0.1
+	 * @return n/a
+	 */
     
     public function resume() {
         
@@ -724,11 +904,11 @@ class TW_Queue {
         if( $this->has_queue_items() == false )
             return 0;
         
-        $the_one = $wpdb->get_row(
+        $query = $wpdb->get_row(
             "SELECT * FROM " . $wpdb->prefix . "tw_queue ORDER BY ID DESC LIMIT 1"
         );
         
-        return $the_one;
+        return $query->queue;
         
     }
     

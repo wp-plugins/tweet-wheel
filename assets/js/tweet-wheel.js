@@ -151,7 +151,7 @@ $(function() {
     
     // ...
     
-    $('.tw-dequeue-post').on('click',function(e){
+    $(document).on('click','.tw-dequeue-post',function(e){
        
         e.preventDefault();
         
@@ -181,7 +181,7 @@ $(function() {
     
     // ...
     
-    $('.tw-queue-post').on('click',function(e){
+    $(document).on('click','.tw-queue-post',function(e){
        
         e.preventDefault();
         
