@@ -31,18 +31,25 @@ class TW_Queue {
         // Add admin menu
         add_filter( 'tw_load_admin_menu', array( $this, 'menu' ) );
         
-        // Add some post actions to the post list
-        add_filter( 'post_row_actions', array( $this, 'post_row_action' ), 10, 2);
+        // Add some post actions to the post list screen
+        add_filter( 'post_row_actions', array( $this, 'post_row_queue' ), 10, 2);
+        add_filter( 'admin_footer-edit.php', array( $this, 'bulk_queue_option' ) );
+        add_action( 'load-edit.php', array( $this, 'bulk_queue' ) );
+        add_action( 'admin_notices', array( $this, 'bulk_queue_admin_notice' ) );
+        
+        // Add 15 minutes cron job
+        add_filter( 'cron_schedules', array( $this, 'cron_add_every_fifteen_minutes' ) );
         
         // Hooks to action on particular post status changes
-        //add_action( 'publish_post', array( $this, 'on_publish_post' ), 999, 1 );
         add_action( 'publish_post', array( $this, 'on_publish_post' ), 999, 1 );
         add_action( 'transition_post_status', array( $this, 'on_unpublish_post' ), 999, 3 );
         
         // AJAX actions
         add_action( 'wp_ajax_save_queue', 'ajax_save_queue' );
         add_action( 'wp_ajax_empty_queue_alert', 'ajax_hide_empty_queue_alert' );
+        add_action( 'wp_ajax_change_queue_status', 'ajax_change_queue_status' );
         add_action( 'wp_ajax_remove_from_queue', 'ajax_remove_from_queue' );
+        add_action( 'wp_ajax_add_to_queue', 'ajax_add_to_queue' );
         
         // CRON
         add_action( 'wp', array( $this, 'cron' ) );
@@ -184,12 +191,12 @@ class TW_Queue {
         ?>
         <ul class="queue-tools">
             <li><a href="#" id="save-the-queue" class="button button-primary disabled">All Saved</a></li>
-            <li><a href="#" id="change-queue-status" class="button"><?php echo $this->get_queue_status() == 0 ? 'Resume' : 'Pause' ?></a></li>
+            <li><a href="#" id="change-queue-status" class="button"><?php echo $this->get_queue_status() == 'paused' ? 'Resume' : 'Pause' ?></a></li>
             <li><a href="<?php echo admin_url( '/admin.php?page=tw_queue&tw_fill_up=true' ); ?>" class="button">Refill</a></li>
             <li><a id="tw-empty-queue" href="#" class="button">Empty</a></li>
             <li><a id="tw-simple-view" href="#" class="button">Simple View</a></li>
         </ul>
-        <span id="queue-status">Status: <?php echo $this->get_queue_status() == 0 ? 'Paused' : 'Running' ?></span>
+        <span id="queue-status">Status: <?php echo $this->get_queue_status() == 'paused' ? 'Paused' : 'Running' ?></span>
         <script>
         $(document).ready(function(){
            $('#tw-empty-queue').click(function(){
@@ -234,17 +241,17 @@ class TW_Queue {
         
     }
     
-    public function insert_post( $post_id, $skip = false ) {
+    public function insert_post( $post_id, $skip_queue = false, $skip_exclusion = false ) {
         
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
         
         global $wpdb;
         
-        if( $this->is_item_queued( $post_id ) == true && $skip == false )
+        if( $this->is_item_queued( $post_id ) == true && $skip_queue == false )
             return false;
         
-        if( $this->is_item_excluded( $post_id ) == true && $skip == false )
-            return;
+        if( $this->is_item_excluded( $post_id ) == true && $skip_exclusion == false )
+            return false;
         
         $result = $wpdb->insert(
             $wpdb->prefix . 'tw_queue',
@@ -270,7 +277,30 @@ class TW_Queue {
         
     }
     
-    public function post_row_action( $actions, $post ) {
+    public function exclude_post( $post_id ) {
+        
+        $this->remove_post( $post_id );
+        
+        $excluded = array( 0 => 1 );
+        $excluded = array_shift( $excluded );
+
+        update_post_meta( $post_id, 'post_exclude', $excluded );
+        
+        return true;
+        
+    }
+    
+    public function include_post( $post_id ) {
+        
+        $excluded = array();
+
+        update_post_meta( $post_id, 'post_exclude', $excluded );
+        
+        return true;
+        
+    }
+    
+    public function post_row_queue( $actions, $post ) {
         
         //check for your post type
         if ( $post->post_type == "post" && $post->post_status == "publish" ) :
@@ -281,11 +311,11 @@ class TW_Queue {
             
             else if( $this->is_item_queued( $post->ID ) ) :
                 
-                $actions['dequeue'] = '<a style="color:#a00"  href="'.admin_url('/edit.php?tw_dequeue=' . $post->ID).'">Dequeue</a>';
+                $actions['dequeue'] = '<a class="tw-dequeue-post" style="color:#a00" data-post-id="'.$post->ID.'">Dequeue</a>';
                 
             else :
                 
-                $actions['queue'] = '<a href="'.admin_url('/edit.php?tw_queue=' . $post->ID).'">Queue</a>';
+                $actions['queue'] = '<a class="tw-queue-post" href="#" data-post-id="'.$post->ID.'">Queue</a>';
                 
             endif;
             
@@ -295,6 +325,134 @@ class TW_Queue {
         
     }
     
+    public function bulk_queue_option() {
+        
+        global $post_type;
+ 
+          if($post_type == 'post') {
+            ?>
+            <script type="text/javascript">
+              jQuery(document).ready(function() {
+                  jQuery('<option>').val('queue').text('<?php _e('Queue')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('queue').text('<?php _e('Queue')?>').appendTo("select[name='action2']");
+                  jQuery('<option>').val('dequeue').text('<?php _e('Dequeue')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('dequeue').text('<?php _e('Dequeue')?>').appendTo("select[name='action2']");
+                  jQuery('<option>').val('exclude').text('<?php _e('Exclude')?>').appendTo("select[name='action']");
+                  jQuery('<option>').val('exclude').text('<?php _e('Exclude')?>').appendTo("select[name='action2']");
+              });
+            </script>
+            <?php
+          }
+        
+    }
+    
+    public function bulk_queue() {
+
+        // 1. get the action
+        $wp_list_table = _get_list_table('WP_Posts_List_Table');
+        $action = $wp_list_table->current_action();
+        
+		if(isset($_REQUEST['post'])) {
+			$post_ids = array_map('intval', $_REQUEST['post']);
+		}
+		
+        if(empty($post_ids)) return;
+        
+        // 2. security check
+        check_admin_referer('bulk-posts');
+
+        switch($action) {
+
+        // 3. Perform the action
+        case 'queue':
+
+            $queued = 0;
+
+            foreach( $post_ids as $post_id ) {
+                if ( $this->include_post( $post_id ) && $this->insert_post($post_id) )
+                    $queued++;
+            }
+
+            // build the redirect url
+            $sendback = add_query_arg( array('queued' => $queued ), $sendback );
+
+            break;
+
+        case 'dequeue':
+            
+            $dequeued = 0;
+
+            foreach( $post_ids as $post_id ) {
+                if ( $this->remove_post($post_id) )
+                    $dequeued++;
+            }
+
+            // build the redirect url
+            $sendback = add_query_arg( array('dequeued' => $dequeued ), $sendback );
+            
+            break;
+            
+        case 'exclude':
+            
+            $excluded = 0;
+
+            foreach( $post_ids as $post_id ) {
+                if ( $this->exclude_post($post_id) )
+                    $excluded++;
+            }
+
+            // build the redirect url
+            $sendback = add_query_arg( array('excluded' => $excluded ), $sendback );
+            
+            break;
+
+        default: return;
+
+        }
+
+        // ...
+
+        // 4. Redirect client
+        wp_redirect($sendback);
+
+        exit();
+        
+    }
+    
+    public function bulk_queue_admin_notice() {
+ 
+      global $post_type, $pagenow;
+ 
+      // Posts queued
+ 
+      if($pagenow == 'edit.php' && $post_type == 'post' &&
+         isset($_REQUEST['queued']) && (int) $_REQUEST['queued']) {
+        $message = sprintf( _n( 'Post queued.', '%s posts queued.', $_REQUEST['queued'] ), number_format_i18n( $_REQUEST['queued'] ) );
+        echo '<div class="updated"><p>' . $message . '</p></div>';
+      }
+      
+      // ...
+      
+      // Posts dequeued
+      
+      if($pagenow == 'edit.php' && $post_type == 'post' &&
+         isset($_REQUEST['dequeued']) && (int) $_REQUEST['dequeued']) {
+        $message = sprintf( _n( 'Post dequeued.', '%s posts dequeued.', $_REQUEST['dequeued'] ), number_format_i18n( $_REQUEST['dequeued'] ) );
+        echo '<div class="updated"><p>' . $message . '</p></div>';
+      }
+      
+      // ...
+      
+      // Posts excluded
+      
+      if($pagenow == 'edit.php' && $post_type == 'post' &&
+         isset($_REQUEST['excluded']) && (int) $_REQUEST['excluded']) {
+        $message = sprintf( _n( 'Post excluded.', '%s posts excluded.', $_REQUEST['excluded'] ), number_format_i18n( $_REQUEST['excluded'] ) );
+        echo '<div class="updated"><p>' .$message .'</p></div>';
+      }
+      
+    }
+    
     public function display_queued_items() {
         
         $in_queue = $this->get_queued_items();
@@ -302,21 +460,31 @@ class TW_Queue {
         ?>
         
         <div id="the-queue">
-            <!--<div class="the-queue-item tweeted">
-                <div class="post-header">
-                    <span class="title">Recently Tweeted...</span>
-                    <time>Tweeted Today at 12:05</time>
+            <?php
+                
+            if( '' != get_option( 'tw_last_tweet' ) ) :
+                
+                $tweet = get_option( 'tw_last_tweet' );
+                
+            ?>
+            
+                <div class="the-queue-item tweeted">
+                    <div class="post-header">
+                        <span class="title"><?php echo isset( $tweet['title'] ) ? $tweet['title'] : get_the_title( $tweet['ID'] ); ?></span>
+                        <time>Tweeted <?php echo date( 'H:i:s d-m-y', get_option( 'tw_last_tweet_time' ) ); ?></time>
+                    </div>
+                    <div class="post-content">
+                        <?php echo $tweet['text']; ?>
+                    </div>
                 </div>
-                <div class="post-content">
-                    Test test test...
-                </div>
-            </div>-->
+            
+            <?php endif; ?>
             <ul>
             <?php foreach( $in_queue as $q ) : ?>
                 <li class="the-queue-item" id="<?php echo $q->post_ID; ?>">
                     <div class="post-header">
                         <span class="title"><?php echo get_the_title( $q->post_ID ); ?></span>
-                        <span class="drag-handler"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAARCAYAAADHeGwwAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAKtwAACrcB78nXjgAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAETSURBVDiNtdUxK4VhFAfw33mTmVkyWJRRKawyiPItLCYfQN3LonQXExOLbAwm2X0DsVEGFgY2cQzeV+6bxXvdf52eznPqnPP8z//0BMaxhVkcoJ2Z7xARoxjRDM+ZeQPHyB+2kpmwhvda7K+2X2CmVrny51E07L7CwoAvWjZ+XB6W5yaGMdYw+RNa4avLRUzjKDOvGyb8FVHy3TcEhrCqVFFmnnwHIwoMNsz9VqlxV/fk58pXLeNBcwW9YB3ua4GdssBZD8kruy/wTUmJyt/DY0N64BWdvs+g7yoqIqKIiKWIaEfExH8XCLR0b/JkZl5FxBQ6etxkuNM9+e2StlO9q+i2wGWtcuVf4KNh9xXOQ5//g0/HsKumwosbiwAAAABJRU5ErkJgggb398138661cc24bd414674af8ee54426"/></span>
+                        <span class="drag-handler"><img src="<?php echo TW_PLUGIN_URL; ?>/assets/images/reorder.png"/></span>
                         <?php $this->item_tools( $q->post_ID ); ?>
                     </div>
                     <div class="post-content">
@@ -341,13 +509,13 @@ class TW_Queue {
     
     public function pause() {
         
-        update_option( 'tw_queue_running', 0 );
+        update_option( 'tw_queue_status', 'paused' );
         
     }
     
     public function resume() {
         
-        update_option( 'tw_queue_running', 1 );
+        update_option( 'tw_queue_status', 'running' );
         
     }
     
@@ -376,7 +544,7 @@ class TW_Queue {
             is_array( get_post_meta( $post_id, 'post_exclude' ) ) && 
             ! isset( $_POST['post_exclude'] )
         ) :
-            $this->insert_post( $post_id, true );
+            $this->insert_post( $post_id, false, true );
             return;
         endif;
             
@@ -407,10 +575,24 @@ class TW_Queue {
     
     // ...
     
+    public function cron_add_every_fifteen_minutes( $schedules ) {
+        
+     	// Adds every 15 minutes to the existing schedules.
+     	$schedules['fifteen_minutes'] = array(
+     		'interval' => 900,
+     		'display' => __( 'Every 15 Minutes' )
+     	);
+        
+     	return $schedules;
+        
+     }
+    
+    // ...
+    
     public function cron() {
     
         if ( ! wp_next_scheduled( 'tw_cron_job' ) ) {
-            wp_schedule_event( time(), 'hourly', 'tw_cron_job' );
+            wp_schedule_event( time(), 'fifteen_minutes', 'tw_cron_job' );
         }
         
     }   
@@ -422,7 +604,7 @@ class TW_Queue {
         do_action( 'tw_before_cron' );
         
         // If queue is paused...
-        if( 0 == get_option( 'tw_queue_running' ) )
+        if( 'running' != get_option( 'tw_queue_status' ) )
             return;
         
         $interval = wpsf_get_setting( 'tw_settings', 'timing', 'post_interval' );
@@ -450,7 +632,7 @@ class TW_Queue {
                     $tweet = TW()->tweet()->preview( $q->post_ID );
         
                     update_option( 'tw_last_tweet_time', time() );
-                    update_option( 'tw_last_tweet', array( 'ID' => $q->post_ID, 'text' => $tweet ) );
+                    update_option( 'tw_last_tweet', array( 'ID' => $q->post_ID, 'title' => get_the_title( $q->post_ID ), 'text' => $tweet ) );
                     
                     break;
                     
@@ -531,7 +713,7 @@ class TW_Queue {
     
     public function get_queue_status() {
         
-        return get_option( 'tw_queue_running' );
+        return get_option( 'tw_queue_status' );
         
     }
     
