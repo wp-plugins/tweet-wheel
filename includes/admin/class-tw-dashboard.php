@@ -32,10 +32,8 @@ class TW_Dashboard {
         
     }
     
-    public function page() {
-        
-        tw_load_settings();
-        
+    public static function page() {
+
         ?>
         
 		<div class="wrap tweet-wheel about-wrap">
@@ -44,8 +42,17 @@ class TW_Dashboard {
         
             <div class="about-text">
                 Thank you for joining a happy family of all Tweet Wheel users!<br/>
-                Tweet Wheel <?php echo TW()->version; ?> is now ready to keep your <br/>
+                Tweet Wheel <?php echo TW_VERSION; ?> is now ready to keep your <br/>
                 Twitter profile active and engaging at all times!
+            </div>
+            
+            <div class="tw-badge">Version <?php echo TW_VERSION; ?></div>
+            
+            <hr>
+            
+            <div class="changelog point-releases">
+            	<h3>What's new</h3>
+            	<p><strong>Version <?php echo TW_VERSION; ?></strong> addressed a few bugs. For more information, see <a href="https://wordpress.org/plugins/tweet-wheel/changelog/" target="_blank">the changelog notes</a>. 	</p>
             </div>
             
             <hr>
@@ -114,7 +121,7 @@ class TW_Dashboard {
             </div>
             
             <div class="return-to-dashboard">
-                <a href="<?php echo TW()->twitter()->is_authed() == false ? admin_url('/admin.php?page=tw_twitter_auth') : admin_url('/admin.php?page=tw_queue') ?>">Start rocking!</a>
+                <a href="<?php echo TW()->twitter()->is_authed() == false ? admin_url('/admin.php?page=tw_twitter_auth') : admin_url('/admin.php?page=tw_queue') ?>">Start wheelin' !</a>
             </div>
             
         </div>
