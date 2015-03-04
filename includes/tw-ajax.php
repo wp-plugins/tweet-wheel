@@ -19,29 +19,40 @@
 
 function ajax_save_queue() {
 
-    // Dump the current queue in case something goes wrong...
-    $old_queue = TW()->queue()->get_queued_items();
-    
-    // Read new queue
-    $new_queue = (array) $_POST['queue_order'];
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
 
-    TW()->queue()->remove_all();
+    if ( current_user_can( 'manage_options' ) ) :
+
+        // Dump the current queue in case something goes wrong...
+        $old_queue = TW()->queue()->get_queued_items();
     
-    foreach( $new_queue as $post ) :
-        
-        $insert = TW()->queue()->insert_post( $post );
-        
-        // If one saving fails, restore the backup
-        if( $insert == false ) :
-            TW()->queue()->remove_all();
-            TW()->queue()->fill_up($old_queue);
-            echo 'error';
-            exit;
-        endif;
-        
-    endforeach;
+        // Read new queue
+        $new_queue = (array) $_POST['queue_order'];
+
+        TW()->queue()->remove_all();
     
-    echo 'ok';
+        foreach( $new_queue as $post ) :
+        
+            $insert = TW()->queue()->insert_post( $post );
+        
+            // If one saving fails, restore the backup
+            if( $insert == false ) :
+                TW()->queue()->remove_all();
+                TW()->queue()->fill_up($old_queue);
+                echo json_encode( array( 'response' => 'error' ) );
+                exit;
+            endif;
+        
+        endforeach;
+    
+        echo json_encode( array( 'response' => 'ok' ) );
+        
+        exit;
+    
+    endif;
+    
+    echo json_encode( array( 'response' => 'error', 'message' => 'Not enough permissions' ) );
+    
     exit;
     
 }
@@ -61,7 +72,17 @@ function ajax_save_queue() {
 
 function ajax_hide_empty_queue_alert() {
     
-    set_transient( '_tw_empty_queue_alert_' . get_current_user_id(), 'hide', 60*60*24*7 ); // hide for a week
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
+
+    if ( current_user_can( 'manage_options' ) ) :
+    
+        set_transient( '_tw_empty_queue_alert_' . get_current_user_id(), 'hide', 60*60*24*7 ); // hide for a week
+        
+        echo json_encode( array( 'response' => 'ok' ) );
+    
+    endif;
+    
+    exit;
     
 }
 
@@ -79,20 +100,29 @@ function ajax_hide_empty_queue_alert() {
  **/
 
 function ajax_change_queue_status() {
+    
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
 
-    $status = TW()->queue()->get_queue_status();
+    if ( current_user_can( 'manage_options' ) ) :
+
+        $status = TW()->queue()->get_queue_status();
     
-    if( $status == "paused" ) :
-        TW()->queue()->resume();
-        echo TW()->queue()->get_queue_status(); exit;
+        if( $status == "paused" ) :
+            TW()->queue()->resume();
+        endif;
+    
+        if( $status == "running" ) :
+            TW()->queue()->pause();
+        endif;
+        
+        echo json_encode( array( 'response' => TW()->queue()->get_queue_status() ) );
+        
+        exit;
+
     endif;
     
-    if( $status == "running" ) :
-        TW()->queue()->pause();
-        echo TW()->queue()->get_queue_status(); exit;
-    endif;
+    echo json_encode( array( 'response' => 'error', 'message' => 'Not enough permissions to perform this action' ) );
     
-    echo 'error';
     exit;
     
 }
@@ -112,12 +142,22 @@ function ajax_change_queue_status() {
 
 function ajax_remove_from_queue() {
     
-    if( TW()->queue()->remove_post( $_POST['post_id'] ) ) :
-        echo json_encode( array( 'response' => 'OK' ) );
-        exit;
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
+
+    if ( current_user_can( 'manage_options' ) ) :
+    
+        if( TW()->queue()->remove_post( $_POST['post_id'] ) ) :
+            
+            echo json_encode( array( 'response' => 'ok' ) );
+            
+            exit;
+            
+        endif;
+    
     endif;
     
     echo json_encode( array( 'response' => 'error' ) );
+    
     exit;
     
 }
@@ -137,12 +177,22 @@ function ajax_remove_from_queue() {
 
 function ajax_add_to_queue() {
     
-    if( TW()->queue()->insert_post( $_POST['post_id'] ) ) :
-        echo json_encode( array( 'response' => 'OK' ) );
-        exit;
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
+
+    if ( current_user_can( 'manage_options' ) ) :
+    
+        if( TW()->queue()->insert_post( $_POST['post_id'] ) ) :
+            
+            echo json_encode( array( 'response' => 'ok' ) );
+            
+            exit;
+            
+        endif;
+    
     endif;
     
     echo json_encode( array( 'response' => 'error' ) );
+    
     exit;
     
 }
@@ -162,12 +212,26 @@ function ajax_add_to_queue() {
 
 function ajax_tweet() {
     
-    if( TW()->tweet()->tweet( $_POST['post_id'] ) == true ) :
-        echo json_encode( array( 'response' => 'OK' ) );
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
+
+    if ( current_user_can( 'manage_options' ) ) :
+
+        if( false != TW()->tweet()->tweet( $_POST['post_id'] ) ) :
+            
+            echo json_encode( array( 'response' => 'ok' ) );
+            
+            exit;
+            
+        endif;
+        
+        echo json_encode( array( 'response' => 'error', 'message' => 'Cannot send a tweet. More likely problem with API.' ) );
+        
         exit;
+    
     endif;
     
     echo json_encode( array( 'response' => 'error' ) );
+    
     exit;
     
 }

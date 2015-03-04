@@ -3,7 +3,7 @@
  * Plugin Name: Tweet Wheel
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.3
+ * Version: 0.3.1
  * Author: Tomasz Lisiecki from Nerd Cow
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
@@ -35,7 +35,7 @@ final class TweetWheel {
     /**
      * @var string
      */
-    public $version = '0.3';
+    public $version = '0.3.1';
     
     // ...
     
@@ -127,8 +127,8 @@ final class TweetWheel {
         
         register_uninstall_hook( __FILE__, 'tw_uninstall' );
         
+        // Init plugin
         add_action( 'init', array( $this, 'init' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
         
         // Hook after loading the plugin. You welcome.
         do_action( 'tweetwheel_loaded' );
@@ -246,7 +246,11 @@ final class TweetWheel {
         wp_enqueue_script( 'autosize' );
         
         // Custom JS
-        wp_register_script( 'tw-js', TW_PLUGIN_URL . '/assets/js/tweet-wheel.js' );
+        wp_register_script( 'tw-js', TW_PLUGIN_URL . '/assets/js/tweet-wheel.js' );    
+        wp_localize_script( 'tw-js', 'TWAJAX', array(
+            'twNonce' => wp_create_nonce( 'tweet-wheel-nonce' )
+            )
+        );
         wp_enqueue_script( 'tw-js' );
         
     }
@@ -285,8 +289,14 @@ final class TweetWheel {
     
     public function init() {
         
+        if ( ! current_user_can( 'manage_options' ) )
+            return;
+        
         // Another gift.. Hook before plugin init
         do_action( 'before_tweetwheel_init' );
+        
+        // Load assets
+        add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
         
         // Load Twitter class instance
         $this->twitter = $this->twitter();

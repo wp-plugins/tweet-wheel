@@ -3,15 +3,16 @@ Contributors: NerdCow
 Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 0.3
-Donate: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
+Stable tag: 0.3.1
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Automated and redefined post tweeting for every Wordpress blog.
 
 == Description ==
-## If there is one desire of every blogger, it is the exposure.
+
+### If there is one desire of every blogger, it is the exposure.
 
 Tweet Wheel is a simple and yet powerful tool that every blogger will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from user's blog and take the burden off bloggers' shoulders and let them focus on the thing they are best at - writing.
 
@@ -48,13 +49,14 @@ Comment on your blog, reply to blog-related tweets and more. Leave the rest to T
 
 == Installation ==
 
-## Minimum requirements
+**Minimum requirements**
+
 * WordPress 3.8 or greater
 * PHP version 5.2 or greater
 * MySQL version 5.0 or greater
 * WP Cron enabled in your WordPress installation
 
-## There are two ways to install Tweet Wheel
+There are two ways to install Tweet Wheel
 
 ### via WordPress plugin upload - automated
 Navigate to Plugins > Upload New Plugin and upload the zip file you have downloaded. Voilla!
@@ -84,6 +86,9 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 2. The queue. Very controlable and customisable. You can shuffle tweets, tweet them on go, pause / resume the queue. Just check it out!
 
 == Changelog ==
+
+= 0.3.1 =
+* Important security fix around AJAX functionality
 
 = 0.3 =
 * Fixed the issue with saving the queue after removing posts (they were being readded regardless)

@@ -269,7 +269,7 @@ class TW_Tweet {
         // Sending a tweet....
         $response = $connection->post( "statuses/update", array( "status" => $tweet ) );
 
-        if( is_array( $response->errors ) ) :
+        if( isset( $response->errors ) && is_array( $response->errors ) ) :
             
             do_action( 'tw_tweet_error', $post_id, $response );
 
@@ -335,4 +335,3 @@ function tw_tweet_parse_title( $post_id, $tweet ) {
     return get_the_title( $post_id );
     
 }
-

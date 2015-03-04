@@ -53,13 +53,22 @@ $(function() {
         e.preventDefault();
         $('#save-the-queue').addClass('saving disabled').text('Saving...');
         var data = $('#the-queue ul').sortable('toArray');
-        $.post( ajaxurl, { action: 'save_queue', queue_order : data }, function(response){
-            if( response == 'ok' ) {
-                $('#save-the-queue').removeClass('saving').addClass('disabled').text('All Saved');
-            } else {
-                alert( "Couldn't save changes. Not sure why... Restored original queue!" );
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'save_queue', 
+                twnonce: TWAJAX.twNonce,
+                queue_order : data
+            }, 
+            function(response){
+                var data = $.parseJSON(response);
+                if( data.response == 'ok' ) {
+                    $('#save-the-queue').removeClass('saving').addClass('disabled').text('All Saved');
+                } else {
+                    alert( "Couldn't save changes. Not sure why... Restored original queue!" );
+                }
             }
-        } ); 
+        ); 
     });
 
     $( ".post-header .title" ).click(function() {
@@ -69,33 +78,46 @@ $(function() {
     $('#empty-queue-alert-hide').click(function(e){
         e.preventDefault();
         $('.tw-empty-queue-alert').slideUp();
-        $.post( ajaxurl, { action: 'empty_queue_alert' } ); 
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'empty_queue_alert', 
+                twnonce: TWAJAX.twNonce 
+            }
+        ); 
     });
-});
-
-
-$(function() {
+    
+    // ...
 
     $('#change-queue-status').click(function(e){
         e.preventDefault();
         
         $('#change-queue-status').addClass('disabled').text('Working...');
         
-        $.post( ajaxurl, { action: 'change_queue_status' }, function(response) {
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'change_queue_status',
+                twnonce: TWAJAX.twNonce
+            }, 
+            function(response) {
             
-            $('#change-queue-status').removeClass('disabled')
+                var data = $.parseJSON(response);
             
-            if( response == 'paused' ) {
-                $('#change-queue-status').text('Resume');
-                $('#queue-status').text( 'Status: Paused' );
-            } else if( response == 'running' ) {
-                $('#change-queue-status').text('Pause');
-                $('#queue-status').text( 'Status: Running' );
-            } else {
-                $('#change-queue-status').text('Error :(');
-            }
+                $('#change-queue-status').removeClass('disabled')
+            
+                if( data.response == 'paused' ) {
+                    $('#change-queue-status').text('Resume');
+                    $('#queue-status').text( 'Status: Paused' );
+                } else if( data.response == 'running' ) {
+                    $('#change-queue-status').text('Pause');
+                    $('#queue-status').text( 'Status: Running' );
+                } else {
+                    $('#change-queue-status').text('Error :(');
+                }
         
-        } ); 
+            } 
+        ); 
         
         
     });
@@ -109,10 +131,6 @@ $(function() {
          
     });
     
-});
-
-$(function() {
-    
     /**
      * Tweet Now available on the Queue screen
      */
@@ -125,27 +143,33 @@ $(function() {
         
         el.text('Tweeting...');
         
-        $.post( ajaxurl, { action: 'tweet', post_id : el.data('post-id') }, function( response ) {
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'tweet', 
+                post_id : el.data('post-id'),
+                twnonce: TWAJAX.twNonce
+            }, 
+            function( response ) {
+
+                var data = $.parseJSON( response );
+
+                if( data.response == "error" ) {
+                
+                    $('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
+                
+                    el.text('Tweet Now');
+                
+                    alert( 'Twitter did not accept your tweet. In most cases it\'s because it\'s a duplicate. We suggest moving the post down the queue and re-tweeting it again later.' );
+                
+                } else {
+                
+                    $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
+                
+                }
             
-            var data = $.parseJSON( response );
-            
-            console.log( data );
-            
-            if( data.response == "error" ) {
-                
-                $('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
-                
-                el.text('Tweet Now');
-                
-                alert( 'Twitter did not accept your tweet. In most cases it\'s because it\'s a duplicate. We suggest moving the post down the queue and re-tweeting it again later.' );
-                
-            } else {
-                
-                $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp();
-                
-            }
-            
-        } );
+            } 
+        );
         
     });
     
@@ -159,23 +183,31 @@ $(function() {
         
         el.text('Dequeuing...');
         
-        $.post( ajaxurl, { action: 'remove_from_queue', post_id : el.data('post-id') }, function( response ) {
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'remove_from_queue', 
+                post_id : el.data('post-id'),
+                twnonce: TWAJAX.twNonce
+            }, 
+            function( response ) {
             
-            var data = $.parseJSON( response );
+                var data = $.parseJSON( response );
             
-            if( data.response == "error" ) {
+                if( data.response == "error" ) {
                 
-                el.replaceWith('<a href="#" style="color:#a00" class="tw-dequeue-post" data-post-id="'+el.data('post-id')+'">Dequeue</a>');
+                    el.replaceWith('<a href="#" style="color:#a00" class="tw-dequeue-post" data-post-id="'+el.data('post-id')+'">Dequeue</a>');
                 
-                alert( 'We couldn\'t remove your tweet... Not sure why. Try excluding it in the post edit screen.' );
+                    alert( 'We couldn\'t remove your tweet... Not sure why. Try excluding it in the post edit screen.' );
                 
-            } else {
+                } else {
                 
-                el.replaceWith('<a href="#" class="tw-queue-post" data-post-id="'+el.data('post-id')+'">Queue</a>');
+                    el.replaceWith('<a href="#" class="tw-queue-post" data-post-id="'+el.data('post-id')+'">Queue</a>');
                 
-            }
+                }
             
-        } );
+            } 
+        );
         
     });
     
@@ -189,30 +221,36 @@ $(function() {
         
         el.text('Queuing...');
         
-        $.post( ajaxurl, { action: 'add_to_queue', post_id : el.data('post-id') }, function( response ) {
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'add_to_queue', 
+                post_id : el.data('post-id'),
+                twnonce: TWAJAX.twNonce
+            }, 
+            function( response ) {
             
-            var data = $.parseJSON( response );
+                var data = $.parseJSON( response );
             
-            if( data.response == "error" ) {
+                if( data.response == "error" ) {
                 
-                el.replaceWith('<a href="#" class="tw-queue-post" data-post-id="'+el.data('post-id')+'">Queue</a>');
+                    el.replaceWith('<a href="#" class="tw-queue-post" data-post-id="'+el.data('post-id')+'">Queue</a>');
                 
-                alert( 'We couldn\'t queue your tweet... Not sure why. Try excluding it in the post edit screen.' );
+                    alert( 'We couldn\'t queue your tweet... Not sure why. Try excluding it in the post edit screen.' );
                 
-            } else {
+                } else {
                 
-                el.replaceWith('<a href="#" style="color:#a00" class="tw-dequeue-post" data-post-id="'+el.data('post-id')+'">Dequeue</a>');
+                    el.replaceWith('<a href="#" style="color:#a00" class="tw-dequeue-post" data-post-id="'+el.data('post-id')+'">Dequeue</a>');
                 
-            }
+                }
             
-        } );
+            } 
+        );
         
     });
-    
-} );
 
-$(function() {
-    
+    // ...
+
     $('.tw-dequeue').click(function(e){
        
         e.preventDefault();
@@ -221,25 +259,33 @@ $(function() {
         
         el.text('Removing...');
         
-        $.post( ajaxurl, { action: 'remove_from_queue', post_id : el.data('post-id') }, function( response ) {
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'remove_from_queue', 
+                post_id : el.data('post-id'),
+                twnonce: TWAJAX.twNonce
+            },
+            function( response ) {
             
-            var data = $.parseJSON( response );
+                var data = $.parseJSON( response );
             
-            if( data.response == "error" ) {
+                if( data.response == "error" ) {
                 
-                $('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
+                    $('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
                 
-                el.text('Remove');
+                    el.text('Remove');
                 
-                alert( 'We couldn\'t remove your tweet... Not sure why. Try excluding it in the post edit screen.' );
+                    alert( 'We couldn\'t remove your tweet... Not sure why. Try excluding it in the post edit screen.' );
                 
-            } else {
+                } else {
                 
-                $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
+                    $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
                 
-            }
+                }
             
-        } );
+            } 
+        );
         
     });
     

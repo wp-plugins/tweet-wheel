@@ -53,7 +53,7 @@ class TW_Queue {
         add_action( 'publish_post', array( $this, 'on_publish_post' ), 999, 1 );
         add_action( 'transition_post_status', array( $this, 'on_unpublish_post' ), 999, 3 );
         
-        // AJAX actions
+        // AJAX actions        
         add_action( 'wp_ajax_save_queue', 'ajax_save_queue' );
         add_action( 'wp_ajax_empty_queue_alert', 'ajax_hide_empty_queue_alert' );
         add_action( 'wp_ajax_change_queue_status', 'ajax_change_queue_status' );
@@ -866,7 +866,7 @@ class TW_Queue {
         // If is excluded and is not forced
         $excluded = get_post_meta( $post_id, 'post_exclude' );
         
-        if( is_array( $excluded ) && $excluded[0] == 1 )
+        if( is_array( $excluded ) && isset( $excluded[0] ) && $excluded[0] == 1 )
             return true;
         
         return false;
