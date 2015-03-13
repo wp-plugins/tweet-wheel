@@ -61,7 +61,7 @@ class TW_Queue {
         add_action( 'wp_ajax_add_to_queue', 'ajax_add_to_queue' );
         
         // CRON
-        add_action( 'wp', array( $this, 'cron' ) );
+        add_action( 'init', array( $this, 'cron' ), 999 );
         add_action( 'tw_cron_job', array( $this, 'run_queue' ) );
         
         // Display notice about empty queue

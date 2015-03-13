@@ -3,7 +3,7 @@ Contributors: NerdCow
 Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -86,6 +86,9 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 2. The queue. Very controlable and customisable. You can shuffle tweets, tweet them on go, pause / resume the queue. Just check it out!
 
 == Changelog ==
+
+= 0.3.2 =
+* Fixed a bug preventing Tweet Wheel cron job being added to the scheduler. It fixed your issues with tweets not being send out automatically.
 
 = 0.3.1 =
 * Important security fix around AJAX functionality

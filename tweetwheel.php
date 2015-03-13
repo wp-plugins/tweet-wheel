@@ -3,7 +3,7 @@
  * Plugin Name: Tweet Wheel
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.3.1
+ * Version: 0.3.2
  * Author: Tomasz Lisiecki from Nerd Cow
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
@@ -35,7 +35,7 @@ final class TweetWheel {
     /**
      * @var string
      */
-    public $version = '0.3.1';
+    public $version = '0.3.2';
     
     // ...
     
