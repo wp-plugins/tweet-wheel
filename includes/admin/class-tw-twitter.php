@@ -1,14 +1,20 @@
 <?php
 
+// Library that handles Twitter API
 require_once( TW_PLUGIN_DIR . '/includes/libraries/twitteroauth/autoloader.php' );
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 
+/**
+ * TW_Twitter Class
+ *
+ * @class TW_Twitter
+ */
+
 class TW_Twitter {
     
+    // Keeps Twitter OAuth data
     private $auth;
-    
-    private $state;
     
     public static $_instance = null;
 
@@ -23,6 +29,7 @@ class TW_Twitter {
 	 * @static
 	 * @return TweetWheel - Main instance
 	 */
+    
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
@@ -32,6 +39,7 @@ class TW_Twitter {
     
     public function __construct() {
     
+        // Load auth data to the plugin
         $this->auth = (object) array(
             'consumer_key' => 'EHfVZKOX8r6I6OmgoZBhzyPJK',
             'consumer_secret' => 'Xiy6FFX3YtYVN8TdNxUwBqS2mQ2uD5mhpGuGEnDF1iLzRovhqj',
@@ -39,9 +47,23 @@ class TW_Twitter {
             'oauth_token_secret' => wpsf_get_setting( 'tw_twitter_auth', 'twitter_auth', 'oauth_token_secret' )
         );
 
+        // Check if there is a response from Twitter to handle
         add_action( 'init', array( $this, 'maybe_handle_response' ) );
         
     }
+    
+    // ...
+    
+    /**
+     * Talks to Twitter. Handles authorisation, deauthorisation.
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function maybe_handle_response() {
         
@@ -97,14 +119,19 @@ class TW_Twitter {
         
     }
     
-    public function get_auth_url_field() {
-        
-        if( $this->auth->consumer_key == '' || $this->auth->consumer_secret == '' )
-            return "Please provide above values to continue with authorization.";
-        
-        return $this->get_auth_url();        
-        
-    }
+    // ...
+    
+    /**
+     * Builds an authorisation button.
+     * User clicks and is redirected to Twitter to complete the process.
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return string (html)
+     **/
     
     public function get_auth_url() {
         
@@ -135,11 +162,37 @@ class TW_Twitter {
         
     }
     
+    // ...
+    
+    /**
+     * Returns user's authorisation data
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return object
+     **/
+    
     public function get_auth_data() {
         
         return $this->auth;
         
     }
+    
+    // ...
+    
+    /**
+     * Determines if user is authorised with Twitter
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return boolean
+     **/
     
     public static function is_authed() {
         
@@ -150,11 +203,37 @@ class TW_Twitter {
         
     }
     
+    // ...
+    
+    /**
+     * Build a deauthorisation button on settings page
+     *
+     * @type function
+     * @date 02/02/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return string (html)
+     **/
+    
     public function get_deauth_url() {
      
         return '<a href="' . admin_url( '/admin.php?page=tw_settings&deauth=true' ) . '" class="button button-primary" style="background:#D3000D;border-color:#9A0009">De-Authorize &raquo;</a><p>Tweet Wheel will cease from working after de-authorization. Re-authorization will be required to resume the plugin.</p>';
         
     }
+    
+    // ...
+    
+    /**
+     * Deauthorises and redirects to authorisation screen
+     *
+     * @type function
+     * @date 02/02/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function deauthorize() {
 

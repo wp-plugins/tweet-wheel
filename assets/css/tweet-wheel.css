@@ -1,3 +1,24 @@
+/** About Page **/
+.tw-badge {
+    background: url(../images/tweet-wheel-logo-big.png) center 24px/85px 85px no-repeat #fff;
+    -webkit-background-size: 85px 85px;
+    color: #78c8e6;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 600;
+    margin: 5px 0 0;
+    padding-top: 120px;
+    height: 40px;
+    display: inline-block;
+    width: 150px;
+    text-rendering: optimizeLegibility;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 /** Tweet Preview on Post Edit Page **/
 .mb-tweet-preview {
     padding: 20px 80px 0px 80px;
@@ -21,6 +42,7 @@
     max-width: 590px;
     position: relative;
     bottom: -20px;
+    margin: auto;
 }
 
 .mb-tweet-preview .tweets-column ul {
@@ -59,7 +81,7 @@
     background: #E5F2F7;
 }
 
-.mb-tweet-preview .tweets-column .preview-box textarea {
+.mb-tweet-preview .tweets-column .preview-box #tweet-preview-box {
     margin: 0px;
     border-radius: 3px;
     border: 1px solid #99CDE1;
@@ -67,6 +89,14 @@
     line-height: 20px;
     padding: 8px 10px;
     resize: none;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 38px;
+}
+
+.mb-tweet-preview .tweets-column .preview-box #tweet-preview em {
+    background: #FFB2B7;
 }
 
 .mb-tweet-preview .tweets-column .fake-tweet p {
@@ -93,6 +123,13 @@
     padding: 2px 4px;
 }
 
+@media screen and (max-width: 480px) {
+    
+    .mb-tweet-preview {
+        padding: 20px 10px 0px 10px;
+    }
+    
+}
 
 /* Tweet Wheel Queue */
 #tw-queue * {
@@ -243,7 +280,7 @@
 }
 
 #the-queue ul.simple .the-queue-item .post-header .drag-handler {
-    padding-top: 4px;
+    padding-top: 6px;
 }
 
 #the-queue ul.simple .the-queue-item .post-header .drag-handler img {

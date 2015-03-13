@@ -3,7 +3,7 @@
  * Plugin Name: Tweet Wheel
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.1
+ * Version: 0.3.2
  * Author: Tomasz Lisiecki from Nerd Cow
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
@@ -16,6 +16,7 @@
  * @category Core
  * @author Nerd Cow
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -26,14 +27,15 @@ if ( ! class_exists( 'TweetWheel' ) ) :
  * Main TweetWheel Class
  *
  * @class TweetWheel
- * @version	0.0.1
+ * @version	0.2
  */
+    
 final class TweetWheel {
     
     /**
      * @var string
      */
-    public $version = '0.1';
+    public $version = '0.3.2';
     
     // ...
     
@@ -64,7 +66,7 @@ final class TweetWheel {
 	 *
 	 * Ensures only one instance of TweetWheel is loaded or can be loaded.
 	 *
-	 * @since 0.0.1
+	 * @since 0.1
 	 * @static
 	 * @return TweetWheel - Main instance
 	 */
@@ -80,7 +82,7 @@ final class TweetWheel {
 	/**
 	 * Cloning is forbidden.
 	 *
-	 * @since 0.0.1
+	 * @since 0.1
 	 */
 	public function __clone() {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'tweetwheel' ), '0.1' );
@@ -91,7 +93,7 @@ final class TweetWheel {
 	/**
 	 * Unserializing instances of this class is forbidden.
 	 *
-	 * @since 0.0.1
+	 * @since 0.1
 	 */
 	public function __wakeup() {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'tweetwheel' ), '0.1' );
@@ -104,7 +106,7 @@ final class TweetWheel {
      *
      * @type function
      * @date 28/01/2015
-     * @since 0.0.1
+     * @since 0.1
      *
      * @param N/A
      * @return N/A 
@@ -120,12 +122,13 @@ final class TweetWheel {
         
         // Hooks
         register_activation_hook( __FILE__, 'tw_install' );
-        register_activation_hook( __FILE__, 'tw_load_settings' );
         register_activation_hook( __FILE__, 'tw_after_activate' );
         add_action( 'admin_init', array( $this, 'redirect' ) );
         
+        register_uninstall_hook( __FILE__, 'tw_uninstall' );
+        
+        // Init plugin
         add_action( 'init', array( $this, 'init' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
         
         // Hook after loading the plugin. You welcome.
         do_action( 'tweetwheel_loaded' );
@@ -139,7 +142,7 @@ final class TweetWheel {
      *
      * @type function
      * @date 28/01/2015
-     * @since 0.0.1
+     * @since 0.1
      *
      * @param N/A
      * @return N/A
@@ -148,13 +151,21 @@ final class TweetWheel {
     private function constants() {
         
         // Plugin Version
-        define( 'TW_VERSION', $this->version );
+        if( ! defined( 'TW_VERSION' ) )
+            define( 'TW_VERSION', $this->version );
         
         // Paths
-        define( 'TW_PLUGIN_FILE', __FILE__ );
-        define( 'TW_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-        define( 'TW_PLUGIN_DIR', dirname( __FILE__ ) );
-        define( 'TW_PLUGIN_URL', plugins_url( '/tweet-wheel' ) );
+        if( ! defined( 'TW_PLUGIN_FILE' ) )
+            define( 'TW_PLUGIN_FILE', __FILE__ );
+        
+        if( ! defined( 'TW_PLUGIN_BASENAME' ) )
+            define( 'TW_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+        
+        if( ! defined( 'TW_PLUGIN_DIR' ) )
+            define( 'TW_PLUGIN_DIR', dirname( __FILE__ ) );
+        
+        if( ! defined( 'TW_PLUGIN_URL' ) )
+            define( 'TW_PLUGIN_URL', plugins_url( '/tweet-wheel' ) );
         
     }
     
@@ -165,7 +176,7 @@ final class TweetWheel {
      *
      * @type function
      * @date 28/01/2015
-     * @since 0.0.1
+     * @since 0.1
      *
      * @param N/A
      * @return N/A
@@ -175,6 +186,7 @@ final class TweetWheel {
         
         // initial stuff
         include_once( 'includes/install.php' );
+        include_once( 'includes/uninstall.php' );
         include_once( 'includes/helpers.php' );
         
         // Fundamental settings
@@ -208,6 +220,13 @@ final class TweetWheel {
     
     /**
      * Include admin assets
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
      */
     
     public function assets() {
@@ -227,7 +246,11 @@ final class TweetWheel {
         wp_enqueue_script( 'autosize' );
         
         // Custom JS
-        wp_register_script( 'tw-js', TW_PLUGIN_URL . '/assets/js/tweet-wheel.js' );
+        wp_register_script( 'tw-js', TW_PLUGIN_URL . '/assets/js/tweet-wheel.js' );    
+        wp_localize_script( 'tw-js', 'TWAJAX', array(
+            'twNonce' => wp_create_nonce( 'tweet-wheel-nonce' )
+            )
+        );
         wp_enqueue_script( 'tw-js' );
         
     }
@@ -239,7 +262,7 @@ final class TweetWheel {
      *
      * @type function
      * @date 28/01/2015
-     * @since 0.0.1
+     * @since 0.1
      *
      * @param N/A
      * @return N/A
@@ -247,7 +270,7 @@ final class TweetWheel {
     
 	public function ajax_includes() {
         
-		include_once( 'includes/class-tw-ajax.php' );
+		include_once( 'includes/tw-ajax.php' );
         
 	}
     
@@ -258,7 +281,7 @@ final class TweetWheel {
      *
      * @type function
      * @date 28/01/2015
-     * @since 0.0.1
+     * @since 0.1
      *
      * @param N/A
      * @return N/A
@@ -266,8 +289,14 @@ final class TweetWheel {
     
     public function init() {
         
+        if ( ! current_user_can( 'manage_options' ) )
+            return;
+        
         // Another gift.. Hook before plugin init
         do_action( 'before_tweetwheel_init' );
+        
+        // Load assets
+        add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
         
         // Load Twitter class instance
         $this->twitter = $this->twitter();
@@ -280,11 +309,18 @@ final class TweetWheel {
         
     }
     
-    /*
+    // ...
     
-    
-    
-    */
+    /**
+     * Redirect after plugin activation (unless its a bulk update)
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
 
     public function redirect() {
         if (get_option('tw_activation_redirect', false)) {
@@ -304,11 +340,19 @@ final class TweetWheel {
     
     // ... Helpers ...
     
-	/**
-	 * Get the plugin path.
-	 *
-	 * @return string
-	 */
+    // ...
+    
+    /**
+     * Get plugin path
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return string
+     **/
+    
 	public function plugin_path() {
 		return untrailingslashit( plugin_dir_path( __FILE__ ) );
 	}
@@ -322,22 +366,50 @@ final class TweetWheel {
     // ... Class Instances ...
     
     /**
-     * Get TW Twitter Instance
-     */
+     * Gets an instance of TW_Twitter class
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return object
+     **/
+    
     public function twitter() {
         return TW_Twitter::instance();
     }
     
+    // ...
+    
     /**
-     * Get TW Tweet Instance
-     */
+     * Gets an instance of TW_Teet class
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return object
+     **/
+    
     public function tweet() {
         return TW_Tweet::instance();
     }
     
+    // ...
+    
     /**
-     * Get TW Queue Instance
-     */
+     * Gets an instance of TW_Queue class
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return object
+     **/
+    
     public function queue() {
         return TW_Queue::instance();
     }
@@ -347,9 +419,10 @@ final class TweetWheel {
 /**
  * Returns the main instance of TW
  *
- * @since  0.0.1
+ * @since  0.1
  * @return TweetWheel
  */
+
 function TW() {
 	return TweetWheel::instance();
 }
