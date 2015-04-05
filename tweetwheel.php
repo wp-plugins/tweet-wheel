@@ -3,11 +3,11 @@
  * Plugin Name: Tweet Wheel
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.3.2
+ * Version: 0.4
  * Author: Tomasz Lisiecki from Nerd Cow
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
- * Tested up to: 4.1
+ * Tested up to: 4.1.1
  *
  * Text Domain: tweetwheel
  * Domain Path: /i18n/languages/
@@ -35,7 +35,7 @@ final class TweetWheel {
     /**
      * @var string
      */
-    public $version = '0.3.2';
+    public $version = '0.4';
     
     // ...
     
@@ -58,6 +58,13 @@ final class TweetWheel {
      * @var TW_Queue object
      */
     public $queue = null;
+	
+    // ...
+    
+    /**
+     * @var TW_Schedule object
+     */
+    public $schedule = null;
     
     // ...
     
@@ -120,12 +127,15 @@ final class TweetWheel {
         // Load dependencies
         $this->includes();
         
-        // Hooks
+        // Install
         register_activation_hook( __FILE__, 'tw_install' );
         register_activation_hook( __FILE__, 'tw_after_activate' );
-        add_action( 'admin_init', array( $this, 'redirect' ) );
         
+        // Uninstall
         register_uninstall_hook( __FILE__, 'tw_uninstall' );
+        
+        // Hooks
+        add_action( 'admin_init', array( $this, 'redirect' ) );
         
         // Init plugin
         add_action( 'init', array( $this, 'init' ) );
@@ -191,9 +201,21 @@ final class TweetWheel {
         
         // Fundamental settings
         include_once( 'includes/admin/class-tw-menus.php' );
-        include_once( 'includes/admin/class-tw-metaboxes.php' );
+        include_once( 'includes/admin/tw-metaboxes.php' );
         include_once( 'includes/admin/class-tw-settings.php' );
-        
+		
+        // In case add-on or anything wanted their own settings page
+		$setting_pages = apply_filters( 'tw_setting_pages', array(
+			dirname( __FILE__ ) . '/includes/admin/settings/class-tw-settings-general.php'
+		) );
+			
+		foreach( $setting_pages as $s ) :
+			
+			if( file_exists( $s ) )
+				require_once $s;
+			
+		endforeach;
+
         // Third-parties
         include_once( 'includes/libraries/twitteroauth/autoloader.php' );
         
@@ -203,13 +225,21 @@ final class TweetWheel {
         // Tweet Class
         include_once( 'includes/admin/class-tw-tweet.php' );
         
+        // Schedule Class
+        include_once( 'includes/admin/class-tw-schedule.php' );
+        
         // Queue Class
         include_once( 'includes/admin/class-tw-queue.php' );
         
         // Dashboard Class
         include_once( 'includes/admin/class-tw-dashboard.php' );
         
-
+        // Cron class
+        include_once( 'includes/admin/class-tw-cron.php' ); 
+        
+        // Debug class
+        include_once( 'includes/admin/class-tw-debug.php' ); 
+        
         if( defined( 'DOING_AJAX' ) ) :
             $this->ajax_includes();
         endif;
@@ -244,14 +274,28 @@ final class TweetWheel {
         // Other JS Libraries
         wp_register_script( 'autosize', TW_PLUGIN_URL . '/assets/js/autosize.js' );
         wp_enqueue_script( 'autosize' );
+  
+        wp_register_script( 'validate', TW_PLUGIN_URL . '/assets/js/jquery.validate.min.js' );
+        wp_enqueue_script( 'validate' );
         
-        // Custom JS
-        wp_register_script( 'tw-js', TW_PLUGIN_URL . '/assets/js/tweet-wheel.js' );    
-        wp_localize_script( 'tw-js', 'TWAJAX', array(
-            'twNonce' => wp_create_nonce( 'tweet-wheel-nonce' )
-            )
-        );
-        wp_enqueue_script( 'tw-js' );
+        // Tweet Wheel Main JS
+        if( ! wp_script_is( 'tw-js' ) ) : 
+            wp_register_script( 'tw-js', TW_PLUGIN_URL . '/assets/js/tweet-wheel.js' );    
+            wp_localize_script( 'tw-js', 'TWAJAX', array(
+                'twNonce' => wp_create_nonce( 'tweet-wheel-nonce' )
+                )
+            );
+            wp_enqueue_script( 'tw-js' );
+        endif;
+        
+        // ...
+        
+        // Tweet Templates JS
+        if( ! wp_script_is( 'tw-metabox-templates' ) ) : 
+            wp_register_script( 'tw-metabox-templates', TW_PLUGIN_URL . '/assets/js/tweet-templates.js' );    
+            wp_localize_script( 'tw-metabox-templates', 'tweet_template', sprintf( tw_tweet_template_default(), 0, '', 0 ) ); // @TODO - insert default tweet template from settings instead of ''
+            wp_enqueue_script( 'tw-metabox-templates' );
+        endif;
         
     }
     
@@ -301,6 +345,9 @@ final class TweetWheel {
         // Load Twitter class instance
         $this->twitter = $this->twitter();
         
+        // Load Schedule class instance
+        $this->schedule = $this->schedule();
+
         // Load Queue class instance
         $this->queue = $this->queue();
         
@@ -412,6 +459,23 @@ final class TweetWheel {
     
     public function queue() {
         return TW_Queue::instance();
+    }
+	
+    // ...
+    
+    /**
+     * Gets an instance of TW_Schedule class
+     *
+     * @type function
+     * @date 18/03/2015
+     * @since 0.4
+     *
+     * @param N/A
+     * @return object
+     **/
+    
+    public function schedule() {
+        return TW_Schedule::instance();
     }
     
 }

@@ -43,14 +43,87 @@ class TW_Twitter {
         $this->auth = (object) array(
             'consumer_key' => 'EHfVZKOX8r6I6OmgoZBhzyPJK',
             'consumer_secret' => 'Xiy6FFX3YtYVN8TdNxUwBqS2mQ2uD5mhpGuGEnDF1iLzRovhqj',
-            'oauth_token' => wpsf_get_setting( 'tw_twitter_auth', 'twitter_auth', 'oauth_token' ),
-            'oauth_token_secret' => wpsf_get_setting( 'tw_twitter_auth', 'twitter_auth', 'oauth_token_secret' )
+            'oauth_token' => get_option( 'tw_twitter_oauth_token' ),
+            'oauth_token_secret' => get_option( 'tw_twitter_oauth_token_secret' )
         );
+        
+        add_action( 'tw_settings_options_type_deauth', array( $this, 'show_deauth_url' ) );
 
         // Check if there is a response from Twitter to handle
         add_action( 'init', array( $this, 'maybe_handle_response' ) );
         
+        if( ! $this->is_authed() )
+            add_filter( 'tw_load_admin_menu', array( $this, 'menu' ) );
+        
     }
+    
+    // ...
+    
+    /**
+     * Adds "Authorize" menu link
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param array
+	 * @return array
+     */
+    
+    public function menu( $menu ) {
+        
+        $menu[] = array(
+            'page_title' => 'Authorize',
+            'menu_title' => 'Authorize',
+            'menu_slug'  => 'tw_twitter_auth',
+            'function'   => array( $this, 'page' )
+        );
+        
+        return $menu;
+        
+    }
+    
+    // ...
+    
+    /**
+     * Authorize page content
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param n/a
+	 * @return n/a
+     */
+    
+    public function page() {
+        
+        if( $this->is_authed() )
+            return;
+        
+	    ?>
+        
+		<div class="wrap tweet-wheel about-wrap">
+            
+            <div class="headline-feature">
+                <h2>One more thing before we continue...</h2>
+                <div class="feature-image">
+                    <img style="margin:auto;display:block" src="<?php echo TW_PLUGIN_URL ?>/assets/images/tweet-wheel-auth-pic.png">
+                </div>
+                
+                <div class="feature-section" style="text-align:center">
+                    <h3>Twitter Authorization</h3>
+                    <p>Before you can unleash the awesomeness of Tweet Wheel, you need to authorize our app to access your Twitter account. We promise to behave :)</p>
+                    <p><?php echo $this->get_auth_url(); ?></p>
+                </div>
+            
+            </div>
+            
+        </div>
+
+		<?php
+        
+    }    
     
     // ...
     
@@ -90,17 +163,10 @@ class TW_Twitter {
             
             if( isset( $auth_tokens['oauth_token'] ) && isset( $auth_tokens['oauth_token_secret'] ) ) :
                 
-                // On successful authorization, update the settings group to reflect that fact
-                $new_options = wp_parse_args(
-                    wpsf_get_settings( 'tw_twitter_auth' ),
-                    array(
-                        'tw_twitter_auth_twitter_auth_oauth_token' => $auth_tokens['oauth_token'],
-                        'tw_twitter_auth_twitter_auth_oauth_token_secret' => $auth_tokens['oauth_token_secret'],
-                        'tw_twitter_auth_twitter_auth_is_authed' => 1
-                    )
-                );
-                
-                wpsf_update_settings( 'tw_twitter_auth', $new_options );
+                // On successful authorization, update the settings group to reflect that fact            
+                update_option( 'tw_twitter_oauth_token', $auth_tokens['oauth_token'] );
+                update_option( 'tw_twitter_oauth_token_secret', $auth_tokens['oauth_token_secret'] );
+                update_option( 'tw_twitter_is_authed', 1 );
                 
                 delete_transient( 'tw_temp_oauth_token' );
                 delete_transient( 'tw_temp_oauth_token_secret' );
@@ -152,7 +218,7 @@ class TW_Twitter {
                 array( 'oauth_token' => get_transient('tw_temp_oauth_token' ) )
             );
     
-            return '<a href="' . $url . '" class="button button-primary">Authorize &raquo;</a><p>You will be redirected to twitter.com and brought back after authorization.';
+            return '<a href="' . $url . '" class="tw-start-button button">Authorize &raquo;</a><p>You will be redirected to twitter.com and brought back after authorization.';
         
         } catch ( Exception $e ) {
             
@@ -196,7 +262,7 @@ class TW_Twitter {
     
     public static function is_authed() {
         
-        if( wpsf_get_setting( 'tw_twitter_auth', 'twitter_auth', 'is_authed' ) == 1 )
+        if( get_option( 'tw_twitter_is_authed' ) == 1 )
             return true;
         
         return false;
@@ -217,8 +283,16 @@ class TW_Twitter {
      **/
     
     public function get_deauth_url() {
-     
+        
         return '<a href="' . admin_url( '/admin.php?page=tw_settings&deauth=true' ) . '" class="button button-primary" style="background:#D3000D;border-color:#9A0009">De-Authorize &raquo;</a><p>Tweet Wheel will cease from working after de-authorization. Re-authorization will be required to resume the plugin.</p>';
+        
+    }
+    
+    // ...
+    
+    public static function show_deauth_url() {
+     
+        echo '<a href="' . admin_url( '/admin.php?page=tw_settings&deauth=true' ) . '" class="button button-primary" style="background:#D3000D;border-color:#9A0009">De-Authorize &raquo;</a><p>Tweet Wheel will cease from working after de-authorization. Re-authorization will be required to resume the plugin.</p>';
         
     }
     
@@ -239,8 +313,10 @@ class TW_Twitter {
 
         if( self::is_authed() == true ) :
             
-            wpsf_delete_settings( 'tw_twitter_auth' );
-            
+            delete_option( 'tw_twitter_oauth_token' );
+            delete_option( 'tw_twitter_oauth_token_secret' );
+            delete_option( 'tw_twitter_is_authed' );
+
             wp_redirect( admin_url( '/admin.php?page=tw_twitter_auth' ) );
             
         endif;

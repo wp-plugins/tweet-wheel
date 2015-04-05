@@ -6,26 +6,27 @@ $ = jQuery.noConflict();
  * @updated 21.02.2015
  */
 
-if( pagenow == 'post' ) {
+if (pagenow == 'post') {
 
     // Count characters and display on page load
     $(window).load(function(){
     
-        $('#count').text( tw_character_counter( $('#tweet_text-cmb-field-0').val() ) );
+        $('textarea').autosize();
     
     });
 
     // Handle custom tweet text box input and update counter
-    $(document).on('keyup keydown','#tweet_text-cmb-field-0', function(e) {
+    $(document).on('keyup keydown','.tweet-template-textarea', function(e) {
     
         // ...
-    
-        $('#count').text( tw_character_counter( $(this).val() ) );
-    
-        // ...
-    
-        $(this).val( $(this).val().replace("{{URL}}", post_url ) );
-        $(this).val( $(this).val().replace("{{TITLE}}", post_title ) );
+        var count = tw_character_counter( $(this).val() );
+        $(this).parent().find('.counter').text( count );
+        
+        if( count > 140 ) {
+            $(this).parent().find('.counter').addClass( 'too-long' );   
+        } else {
+            $(this).parent().find('.counter').removeClass( 'too-long' );
+        }
     
         // ...
     
@@ -41,7 +42,60 @@ if( pagenow == 'post' ) {
 
 */
 
+$(function(){
+
+	$( "#tw-schedule label[for^=day]" ).click(function(){
+		
+		if( $(this).find('input').is(':checked') ) {
+			$(this).addClass('active');
+		} else {
+			$(this).removeClass('active');
+		}
+		
+	});
+    
+    // ...
+    
+    $('#add-new-time').click(function(e) {
+        
+        e.preventDefault();
+       
+        var template = $('.time-template').html();
+        var last_index = 0;
+        
+        if( $('.times li').length != 0 ) { 
+            last_index = $('.times li').last().data('index');
+            last_index++;
+        }
+        
+        template = template.replace(/\[(\d+)\]/g,'['+last_index+']');
+        
+        console.log(template.match(/\[(\d+)\]/)[1]);
+        
+        $('.times').append( '<li data-index="'+last_index+'">' + template + '</li>' );
+        
+    });
+    
+    // ...
+    
+    $('.remove-time').click(function(e) {
+        
+        e.preventDefault();
+        
+        $(this).parent().remove();
+        
+    });
+	
+});
+
+/*
+
+
+
+*/
+
 $(function() {
+    
     $( "#the-queue ul" ).sortable({
         handle : '.drag-handler',
         update : function() {
@@ -51,8 +105,14 @@ $(function() {
     
     $('#save-the-queue').click(function(e){
         e.preventDefault();
+        
+        if($(this).hasClass('disabled')) {
+            return;
+        }
+        
         $('#save-the-queue').addClass('saving disabled').text('Saving...');
-        var data = $('#the-queue ul').sortable('toArray');
+        var data = $('#the-queue > ul').sortable('toArray');
+
         $.post( 
             ajaxurl, 
             { 
@@ -82,6 +142,20 @@ $(function() {
             ajaxurl, 
             { 
                 action: 'empty_queue_alert', 
+                twnonce: TWAJAX.twNonce 
+            }
+        ); 
+    });
+    
+    // ...
+    
+    $('#wp-cron-alert-hide').click(function(e){
+        e.preventDefault();
+        $('.tw-wp-cron-alert').slideUp();
+        $.post( 
+            ajaxurl, 
+            { 
+                action: 'wp_cron_alert', 
                 twnonce: TWAJAX.twNonce 
             }
         ); 
@@ -289,6 +363,16 @@ $(function() {
         
     });
     
+    // ...
+    
+    $('.show-all-templates').click(function(e) {
+        
+        e.preventDefault();
+
+        $(this).parent().find('li').not(':first-child').toggleClass('visible');
+        
+    });
+    
 } );
 
 function tw_character_counter( raw ) {
@@ -300,9 +384,17 @@ function tw_character_counter( raw ) {
     var tweet_template = raw;
     
     // ...
-
-    tweet_template = tweet_template.replace("{{URL}}", post_url );
-    tweet_template = tweet_template.replace("{{TITLE}}", post_title );
+    
+    if( tw_template_tags.length != 0 || typeof tw_template_tags != undefined ) {
+     
+        jQuery.each( tw_template_tags, function(k,v) {
+            
+            var regex = new RegExp( '{{'+k+'}}', 'g' );
+            tweet_template = tweet_template.replace( regex, v );
+            
+        });
+        
+    }
     
     /**
      * Calculate a whole string length
