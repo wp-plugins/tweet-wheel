@@ -25,7 +25,7 @@ function ajax_save_queue() {
 
         // Dump the current queue in case something goes wrong...
         $old_queue = TW()->queue()->get_queued_items();
-    
+
         // Read new queue
         $new_queue = (array) $_POST['queue_order'];
 
@@ -38,7 +38,7 @@ function ajax_save_queue() {
             // If one saving fails, restore the backup
             if( $insert == false ) :
                 TW()->queue()->remove_all();
-                TW()->queue()->fill_up($old_queue);
+                TW()->queue()->fill_up( $old_queue, 'post_ID' );
                 echo json_encode( array( 'response' => 'error' ) );
                 exit;
             endif;
@@ -77,6 +77,35 @@ function ajax_hide_empty_queue_alert() {
     if ( current_user_can( 'manage_options' ) ) :
     
         set_transient( '_tw_empty_queue_alert_' . get_current_user_id(), 'hide', 60*60*24*7 ); // hide for a week
+        
+        echo json_encode( array( 'response' => 'ok' ) );
+    
+    endif;
+    
+    exit;
+    
+}
+
+// ...
+
+/**
+ * When WP cron is disabled and user acknowledges the problem, hide a message.
+ *
+ * @type function
+ * @date 14/03/2015
+ * @since 0.4
+ *
+ * @param N/A
+ * @return N/A
+ **/
+
+function ajax_wp_cron_alert() {
+    
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
+
+    if ( current_user_can( 'manage_options' ) ) :
+    
+        set_transient( '_tw_wp_cron_alert_' . get_current_user_id(), 'hide', 60*60*24*7 ); // hide for a week
         
         echo json_encode( array( 'response' => 'ok' ) );
     

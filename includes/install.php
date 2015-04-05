@@ -50,6 +50,7 @@ function tw_install() {
 
     // Load default settings
     tw_load_settings();
+    tw_schedule_task();
     
 }
 
@@ -100,3 +101,22 @@ function tw_after_activate() {
     add_option('tw_activation_redirect', true);
 }
 
+// ...
+
+/**
+ * Schedule Cron Job
+ *
+ * @type function
+ * @date 03/04/2015
+ * @since 0.4
+ *
+ * @param N/A
+ * @return N/A
+ **/
+
+function tw_schedule_task() {
+    
+    if( ! wp_next_scheduled( 'tweet_wheel' ) )
+        wp_schedule_event( time(), 'minutely', 'tweet_wheel' );
+
+}  

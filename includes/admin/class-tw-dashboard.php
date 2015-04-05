@@ -7,7 +7,7 @@
  */
 
 class TW_Dashboard {
-    
+
     public static $_instance = null;
     
     // ...
@@ -28,9 +28,33 @@ class TW_Dashboard {
 		return self::$_instance;
 	}
     
-    public function __construct() {
-        
-    }
+    // ...
+    
+    /**
+     * Construct
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
+    
+    public function __construct() {}
+    
+    // ...
+    
+    /**
+     * About us page content
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public static function page() {
 
@@ -38,7 +62,7 @@ class TW_Dashboard {
         
 		<div class="wrap tweet-wheel about-wrap">
             
-			<h1>Welcome at Tweet Wheel!</h1>
+			<h1>Welcome to Tweet Wheel!</h1>
         
             <div class="about-text">
                 Thank you for joining a happy family of all Tweet Wheel users!<br/>
@@ -52,7 +76,7 @@ class TW_Dashboard {
             
             <div class="changelog point-releases">
             	<h3>What's new</h3>
-            	<p><strong>Version <?php echo TW_VERSION; ?></strong> addressed a few bugs. For more information, see <a href="https://wordpress.org/plugins/tweet-wheel/changelog/" target="_blank">the changelog notes</a>. 	</p>
+            	<p>In short - many things!<br/><strong>Version <?php echo TW_VERSION; ?></strong> introduces some HUGE improvements! For more information, see <a href="https://wordpress.org/plugins/tweet-wheel/changelog/" target="_blank">the changelog notes</a>. 	</p>
             </div>
             
             <hr>
@@ -76,9 +100,35 @@ class TW_Dashboard {
             <div class="headline-feature">
                 <h2>Beauty of the automation</h2>
                 
+                <p style="text-align:center">Never worry again tweeting regularly about your blog. Tweet Wheel will do it for you. Automatically.</p>
+                
                 <div class="feature-image">
                     
                     <img src="<?php echo TW_PLUGIN_URL ?>/assets/images/queue-explained.png">
+                    
+                </div>
+                
+                <hr>
+                
+                <h2>Say it in many ways</h2>
+                
+                <p style="text-align:center">We introduced multiple tweet templates to avoid sounding like a broken record. Now you can set as many tweet variations for each post as you like!</p>
+                
+                <div class="feature-image">
+                    
+                    <img src="<?php echo TW_PLUGIN_URL ?>/assets/images/multitemplate.png">
+                    
+                </div>
+                
+                <hr>
+                
+                <h2>Benefit from controlled regularity</h2>
+                
+                <p style="text-align:center">With an in-built scheduler, you can tweet regularly on specific days at specific time. Just the way your readers would expect you to.</p>
+                
+                <div class="feature-image">
+                    
+                    <img src="<?php echo TW_PLUGIN_URL ?>/assets/images/scheduling.png">
                     
                 </div>
                 
@@ -93,7 +143,7 @@ class TW_Dashboard {
                         </div>
                         <div class="last-feature">
                             <h4>Control the timing</h4>
-                            <p>Keep your profile consistent and organised. Adjust the break between each tweet made by Tweet Wheel.</p>
+                            <p>Keep your profile consistent and organised. Schedule posts on specific days at specific times!</p>
                         </div>
                     </div>
                     <div class="feature-section col two-col">
@@ -103,7 +153,7 @@ class TW_Dashboard {
                         </div>
                         <div class="last-feature">
                             <h4>Benefit from templating</h4>
-                            <p>Set a default post tweet template or overwrite it with each post's custom one!</p>
+                            <p>Set a default post tweet template or overwrite it with each post's custom one! Now multi-templating available, too!</p>
                         </div>
                     </div>
                     <div class="feature-section col two-col">
@@ -121,7 +171,7 @@ class TW_Dashboard {
             </div>
             
             <div class="return-to-dashboard">
-                <a href="<?php echo TW()->twitter()->is_authed() == false ? admin_url('/admin.php?page=tw_twitter_auth') : admin_url('/admin.php?page=tw_queue') ?>">Start wheelin' !</a>
+                <a class="tw-start-button button" href="<?php echo TW()->twitter()->is_authed() == false ? admin_url('/admin.php?page=tw_twitter_auth') : admin_url('/admin.php?page=tw_queue') ?>">Start wheelin' !</a>
             </div>
             
         </div>
@@ -133,10 +183,10 @@ class TW_Dashboard {
 }
 
 /**
- * Returns the main instance of TW
+ * Returns the main instance of TW_Dashboard
  *
- * @since  0.0.1
- * @return TweetWheel
+ * @since  0.1
+ * @return TW_Dashboard
  */
 function TW_Dashboard() {
 	return TW_Dashboard::instance();
