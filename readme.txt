@@ -19,6 +19,7 @@ First, install and activate the plugin. You may notice not many options visible 
 Unlike other Twitter plugins, this one works automatically and does not require your constant care. You can get up and running in a few clicks, but if you want to make more out of our solution, you can add multiple, interesting templates for each post. This will reduce your chance of sounding robotic and will let you test headings to see which one comes the most engaging.
 
 **Current features**
+
 * Automated queueing system, which is the core of the plugin. It handles all the automation.
 * Multi-templating for posts helps you to specify limitless amount of tweet variations for each post.
 * Advanced scheduling gives you more control over time of tweetings. Specify days and times at which you want your post published.
@@ -32,6 +33,7 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * Health check tab that let's you know if your website is ready for Tweet Wheel and what to fix.
 
 **Coming soon**
+
 * Twitter cards
 * Analytics
 * Multiple accounts
@@ -90,6 +92,7 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 == Changelog ==
 
 = 0.4 =
+
 * Added multi-templating for posts
 * Added precise scheduling of posts
 * Added health check page to verify settings of WordPress installation
@@ -107,6 +110,7 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 * Changed hundreds lines of code for better stability and security
 
 = 0.3.2 =
+
 * Fixed a bug preventing Tweet Wheel cron job being added to the scheduler. It fixed your issues with tweets not being send out automatically.
 
 = 0.3.1 =
