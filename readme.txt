@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: NerdCow
-Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic
+Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic, schedule, scheduling, timing, loop
 Requires at least: 3.8
 Tested up to: 4.1.1
 Stable tag: 0.4
@@ -8,45 +8,41 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Automated and redefined post tweeting for every Wordpress blog.
+Automated and redefined post tweeting for every Wordpress blog. Precisely schedule your posts for tweeting using various and engaging templates.
 
 == Description ==
 
-### If there is one desire of every blogger, it is the exposure.
+Tweet Wheel is a simple and yet powerful tool that every blogger will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from user's blog and take the burden off bloggers' shoulders and let them focus on the thing they are best at - writing. You can turn your website into a traffic-driving tool in no time.
 
-Tweet Wheel is a simple and yet powerful tool that every blogger will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from user's blog and take the burden off bloggers' shoulders and let them focus on the thing they are best at - writing.
+First, install and activate the plugin. You may notice not many options visible at start, but it's only until you authorise our Twitter app to access your Twitter account. Once authorised, you can enjoy your blog gaining on social media attention even when you are not looking.
 
-Thanks to a built-in queueing system, Tweet Wheel is as easy to manage as a music playlist!
+Unlike other Twitter plugins, this one works automatically and does not require your constant care. You can get up and running in a few clicks, but if you want to make more out of our solution, you can add multiple, interesting templates for each post. This will reduce your chance of sounding robotic and will let you test headings to see which one comes the most engaging.
 
-### Automated queueing system
-In the core of the Tweet Wheel lays automated system that tweets your posts when it's time. It is very stable, safe and keeps your Twitter profile active all the time. Anyone could use a hand in driving extra traffic to their blog, right?
+**Current features**
+* Automated queueing system, which is the core of the plugin. It handles all the automation.
+* Multi-templating for posts helps you to specify limitless amount of tweet variations for each post.
+* Advanced scheduling gives you more control over time of tweetings. Specify days and times at which you want your post published.
+* Customising the queue let's you to supervise the order in which posts are tweeted.
+* Looping is optional, but very useful. If on, it will automatially append just tweeted post at the end of queue. Keeps going infinitely this way.
+* Queue posts on their publishing. When you create a new post you can ask plugin to automatically queue it for you.
+* Pausing and resuming queue comes useful when you need a bit more control. No need to deactivate the plugin to put it on hold.
+* Convenient bulk actions - queue, dequeue and exclude multiple posts at once.
+* Option to tweet instantly without waiting for post's turn - perfect for hot news!
+* Simple view which minifies the queue look so you can fit more items on your screen - helpful for shuffling!
+* Health check tab that let's you know if your website is ready for Tweet Wheel and what to fix.
 
-### Multi-templating
-We introduced multiple tweet templates to avoid sounding like a broken record. Now you can set as many tweet variations for each post as you like!
+**Coming soon**
+* Twitter cards
+* Analytics
+* Multiple accounts
+* Custom post types
+* Custom tweets (not post related)
+* Hashtags suggestions
+* ... many more
 
-### Advanced scheduling
-With an in-built scheduler, you can tweet regularly on specific days at specific time. Just the way your readers would expect you to.
+If you have a suggestion for improvement or a new feature, feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us).
 
-### Customise the queue
-Add, remove, exclude and shuffle the queue the way you please! Tweet Wheel will never tweet without your consent.
-
-### Tweet once or infinitely
-Let Tweet Wheel reschedule every tweeted post.. or don't. It's up to you!
-
-### Automatically queue new posts
-Add new posts to the queue on publish. Why bother when it can be done automagically!
-
-### Engage with your audience
-Comment on your blog, reply to blog-related tweets and more. Leave the rest to Tweet Wheel.
-
-### Other features
-1. Added a Health Check to tell you if your website is ready to handle Tweet Wheel
-1. Very user-friendly interface that every one can familiarise with in minutes
-1. Convenient bulk actions - queue, dequeue and exclude multiple posts at once
-1. Easy pausing and resuming of the queue - no need to deactivate the plugin
-1. Option to tweet instantly - perfect for hot news!
-1. Simple view which minifies the queue look so you can fit more items on your screen - helpful for shuffling!
-1. Many other awesome thingies! Just check it out, it's a free plugin of quality of a premium one.
+Want regular updates? Follow us on [Twitter](https://twitter.com/NerdCowUK) 
 
 == Installation ==
 
@@ -66,6 +62,7 @@ Navigate to Plugins > Upload New Plugin and upload the zip file you have downloa
 1. Unzip the zip file you have downloaded
 1. Upload unzipped folder `tweet-wheel` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Go to Tweet Wheel > Authorize and authorize our plugin to access your Twitter acount
 
 == Frequently Asked Questions ==
 
