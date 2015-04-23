@@ -93,6 +93,11 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 
 == Changelog ==
 
+= 0.5 =
+* Added support for custom post types
+* Ensured compatibility with latest WordPress to date (4.2)
+* Fixed bug which prevented to delete scheduled times
+
 = 0.4 =
 
 * Added multi-templating for posts
