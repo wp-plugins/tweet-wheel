@@ -43,27 +43,37 @@ function tw_post_meta_boxes_setup() {
  * Add all metaboxes
  *
  * @since 0.4
+ * @updated 0.5
  */
 
 function tw_add_tweet_templates_meta() {
-    
-    add_meta_box(
-        'tw-tweet-settings',
-        esc_html__( 'Tweet Settings', 'example' ),
-        'tw_tweet_settings_meta_box',
-        'post',
-        'normal',
-        'default'
-      );
-    
-    add_meta_box(
-        'tw-tweet-templates',
-        esc_html__( 'Tweet Templates', 'example' ),
-        'tw_tweet_templates_meta_box',
-        'post',
-        'normal',
-        'default'
-      );
+	
+	$post_types = tw_get_option( 'tw_settings', 'post_type' );
+	
+	if( empty( $post_types ) || ! is_array( $post_types ) )
+		return;
+	
+	foreach( $post_types as $post_type ) :
+
+		add_meta_box(
+			'tw-tweet-settings',
+			esc_html__( 'Tweet Settings', 'tweet-wheel' ),
+			'tw_tweet_settings_meta_box',
+			$post_type,
+			'normal',
+			'default'
+		);
+
+		add_meta_box(
+			'tw-tweet-templates',
+			esc_html__( 'Tweet Templates', 'tweet-wheel' ),
+			'tw_tweet_templates_meta_box',
+			$post_type,
+			'normal',
+			'default'
+		);
+
+	endforeach;
     
 }
 

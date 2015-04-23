@@ -3,11 +3,11 @@
  * Plugin Name: Tweet Wheel
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.4
+ * Version: 0.5
  * Author: Tomasz Lisiecki from Nerd Cow
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
- * Tested up to: 4.1.1
+ * Tested up to: 4.2
  *
  * Text Domain: tweetwheel
  * Domain Path: /i18n/languages/
@@ -35,7 +35,7 @@ final class TweetWheel {
     /**
      * @var string
      */
-    public $version = '0.4';
+    public $version = '0.5';
     
     // ...
     
@@ -282,7 +282,8 @@ final class TweetWheel {
         if( ! wp_script_is( 'tw-js' ) ) : 
             wp_register_script( 'tw-js', TW_PLUGIN_URL . '/assets/js/tweet-wheel.js' );    
             wp_localize_script( 'tw-js', 'TWAJAX', array(
-                'twNonce' => wp_create_nonce( 'tweet-wheel-nonce' )
+                'twNonce' => wp_create_nonce( 'tweet-wheel-nonce' ),
+				'post_types' => tw_get_option( 'tw_settings', 'post_type' )
                 )
             );
             wp_enqueue_script( 'tw-js' );

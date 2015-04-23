@@ -1,48 +1,40 @@
 $ = jQuery.noConflict();
 
-/**
- * Custom Tweet Metabox Counter and Parsing
- * @since 0.1
- * @updated 21.02.2015
- */
+// ...
 
-if (pagenow == 'post') {
+$(function(){
+	
+	/**
+	 * Custom Tweet Metabox Counter and Parsing
+	 * @since 0.1
+	 * @updated 21.02.2015
+	 */
 
     // Count characters and display on page load
     $(window).load(function(){
-    
+
         $('textarea').autosize();
-    
+
     });
 
     // Handle custom tweet text box input and update counter
     $(document).on('keyup keydown','.tweet-template-textarea', function(e) {
-    
+
         // ...
         var count = tw_character_counter( $(this).val() );
         $(this).parent().find('.counter').text( count );
-        
+    
         if( count > 140 ) {
             $(this).parent().find('.counter').addClass( 'too-long' );   
         } else {
             $(this).parent().find('.counter').removeClass( 'too-long' );
         }
-    
+
         // ...
-    
+
         $('#tweet-preview').text( $(this).val() ); 
 
     } );
-
-}
-
-/*
-
-
-
-*/
-
-$(function(){
 
 	$( "#tw-schedule label[for^=day]" ).click(function(){
 		
@@ -78,7 +70,7 @@ $(function(){
     
     // ...
     
-    $('.remove-time').click(function(e) {
+    $(document).on( 'click', '.remove-time', function(e) {
         
         e.preventDefault();
         
@@ -355,6 +347,12 @@ $(function() {
                 } else {
                 
                     $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
+					
+					if( $('#tw-queue .the-queue-item').length == 0 ) {
+						
+						location.reload();
+						
+					}
                 
                 }
             
@@ -372,7 +370,7 @@ $(function() {
         $(this).parent().find('li').not(':first-child').toggleClass('visible');
         
     });
-    
+
 } );
 
 function tw_character_counter( raw ) {

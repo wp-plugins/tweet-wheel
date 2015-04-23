@@ -23,9 +23,12 @@ if( !function_exists('tw_get_option') ){
         
         $data = get_option( $option . '_options' );
         
-        if( $key != null && isset( $data[$key] ) )
+        if( $key != null && isset( $data[$key] ) ) :
             return $data[$key];
-        
+		elseif( $key != null && ! isset( $data[$key] ) ) :
+			return false;
+		endif;
+
         return $data;
         
     }
@@ -136,5 +139,70 @@ function compare_tweet_templates( $t1, $t2 ) {
         return true;
     
     return false;
+
+}
+
+// ...
+
+/**
+ * Checks if post type is enabled in Tweet Wheel
+ *
+ * @type function
+ * @date 22/04/2015
+ * @since 0.5
+ *
+ * @param string
+ * @return boolean
+ **/
+
+function is_post_type_enabled( $post_type ) {
+     
+	$post_types = tw_get_option( 'tw_settings', 'post_type' );
+
+	if( empty( $post_types ) || ! is_array( $post_types ) )
+		return false;
+	
+	if( in_array( $post_type, $post_types ) )
+		return true;
+    
+    return false;
+
+}
+
+// ...
+
+/**
+ * Get an array of all enabled post types
+ *
+ * @type function
+ * @date 22/04/2015
+ * @since 0.5
+ *
+ * @param format
+ * @return array | boolean
+ **/
+
+function get_all_enabled_post_types( $format = null ) {
+     
+	$post_types = tw_get_option( 'tw_settings', 'post_type' );
+	
+	if( empty( $post_types ) || ! is_array( $post_types ) )
+		return false;
+	
+	$data = '';
+	
+	switch( $format ) :
+		
+		case 'string':
+		$data = implode( ',', $post_types );
+		break;
+		
+		default:
+		$data = $post_types;
+		break;
+		
+	endswitch;
+    
+    return $data;
 
 }

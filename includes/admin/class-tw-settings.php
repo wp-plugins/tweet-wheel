@@ -291,7 +291,7 @@ if ( ! class_exists( 'SF_Settings_API' ) ) {
 		 * @return unknown
 		 */
 		public function validate_options( $input )
-		{            
+		{            	
 			if ( !isset( $_POST['update'] ) )
 				return $this->get_defaults();
 
@@ -300,7 +300,7 @@ if ( ! class_exists( 'SF_Settings_API' ) ) {
             
             // custom
             $this->tabs = apply_filters( $this->id . '_tab_options-' . $tabname, $this->tabs, $_POST[$this->id . '_options' ] );
-            
+			
 			foreach ( $this->tabs[$tabname] as $option ) :
 
 				if ( ! isset( $option['id'] ) )
@@ -313,19 +313,19 @@ if ( ! class_exists( 'SF_Settings_API' ) ) {
 					$option['options'] = apply_filters( $this->id . '_select_options', $option['options'], $option );
 				}
             
-			$id = sanitize_text_field( strtolower( $option['id'] ) );
+				$id = sanitize_text_field( strtolower( $option['id'] ) );
 
-			// Set checkbox to false if it wasn't sent in the $_POST
-			if ( 'checkbox' == $option['type'] && ! isset( $input[$id] ) )
-				$input[$id] = 0;
+				// Set checkbox to false if it wasn't sent in the $_POST
+				if ( 'checkbox' == $option['type'] && ! isset( $input[$id] ) )
+					$input[$id] = 0;
             
-			// For a value to be submitted to database it must pass through a sanitization filter
-			if ( has_filter( 'geczy_sanitize_' . $option['type'] ) ) {
-				$clean[$id] = apply_filters( 'geczy_sanitize_' . $option['type'], $input[$id], $option );
-			}
+				// For a value to be submitted to database it must pass through a sanitization filter
+				if ( has_filter( 'geczy_sanitize_' . $option['type'] ) ) {
+					$clean[$id] = apply_filters( 'geczy_sanitize_' . $option['type'], $input[$id], $option );
+				}
 
 			endforeach;
-
+			
 			do_action( $this->id . '_options_updated', $clean, $tabname );
             
 			add_settings_error( $this->id, 'save_options', __( 'Settings saved.', 'geczy' ), 'updated' );
@@ -424,7 +424,7 @@ if ( ! class_exists( 'SF_Settings_API' ) ) {
 			$tabname = !empty ( $_GET['tab'] ) ? $_GET['tab'] : $tabs[0]['slug'];
             
 			$options = apply_filters( $this->id . '_options_tab-' . $tabname, $this->tabs[$tabname] );  ?>
-                
+				
             <?php do_action( $this->id . '_before_form_tab-' . $tabname ); ?>              
 			<form id="tw-<?php echo $tabname ?>" method="post" action="options.php">
 				<?php settings_fields( $this->id . '_options_nonce' ); ?>

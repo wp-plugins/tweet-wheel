@@ -76,11 +76,9 @@ class TW_Dashboard {
             
             <div class="changelog point-releases">
             	<h3>What's new</h3>
-            	<p>In short - many things!<br/><strong>Version <?php echo TW_VERSION; ?></strong> introduces some HUGE improvements! For more information, see <a href="https://wordpress.org/plugins/tweet-wheel/changelog/" target="_blank">the changelog notes</a>. 	</p>
+            	<p><strong>Now Tweet Wheel handles custom post types meaning you can promote your shop products, portfolio, pages and many more!</strong><br/><strong>Version <?php echo TW_VERSION; ?></strong> introduces some improvements! For more information, see <a href="https://wordpress.org/plugins/tweet-wheel/changelog/" target="_blank">the changelog notes</a>. 	</p>
             </div>
-            
-            <hr>
-            
+
             <div class="headline-feature">
                 <h2>Let's meet</h2>
                 <div class="feature-image">
@@ -88,8 +86,9 @@ class TW_Dashboard {
                 </div>
                 
                 <div class="feature-section">
-                    <h3>If there is one desire of every blogger, it is the exposure.</h3>
-                    <p>Tweet Wheel is a simple and yet powerful tool that every blogger will fall in love with. The idea behind Tweet Wheel is to take the burden off bloggers' shoulders and let them focus on the thing they are best at - writing.</p>
+                    <h3>If there is one desire of every website owner, it is the exposure.</h3>
+                    <p>Tweet Wheel is a simple and yet powerful tool that everyone will fall in love with. The idea behind Tweet Wheel is to take the burden off website owners' shoulders and let them focus on the thing they are best at.</p>
+                    <p>Promote your blog entires, shop products, case studies, pages and anything you like!</p>
                     <p>Thanks to a built-in queueing system, Tweet Wheel is as easy to manage as a music playlist!</p>
                 </div>
             
@@ -100,7 +99,7 @@ class TW_Dashboard {
             <div class="headline-feature">
                 <h2>Beauty of the automation</h2>
                 
-                <p style="text-align:center">Never worry again tweeting regularly about your blog. Tweet Wheel will do it for you. Automatically.</p>
+                <p style="text-align:center">Never worry again tweeting regularly about your content. Tweet Wheel will do it for you. Automatically.</p>
                 
                 <div class="feature-image">
                     
@@ -124,7 +123,7 @@ class TW_Dashboard {
                 
                 <h2>Benefit from controlled regularity</h2>
                 
-                <p style="text-align:center">With an in-built scheduler, you can tweet regularly on specific days at specific time. Just the way your readers would expect you to.</p>
+                <p style="text-align:center">With an in-built scheduler, you can tweet regularly on specific days at specific time. Just the way your followers would expect you to.</p>
                 
                 <div class="feature-image">
                     
@@ -163,7 +162,7 @@ class TW_Dashboard {
                         </div>
                         <div class="last-feature">
                             <h4>Engage with your audience</h4>
-                            <p>Comment on your blog, reply to blog-related tweets and more. Leave the rest to Tweet Wheel.</p>
+                            <p>Focus on running your blog or your business. Leave the rest to Tweet Wheel.</p>
                         </div>
                     </div>
                 </div>

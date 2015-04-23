@@ -72,14 +72,14 @@ function tw_load_settings() {
     global $tw_db_version;
     
     $default = array(
-        'tw_settings_global_queue_new_post' => 0,
-        'tw_settings_template_tweet_text' => '{{TITLE}} - {{URL}}',
-        'tw_settings_timing_post_interval' => 180,
-        'tw_settings_timing_loop' => 1
+		'post_type' => array( 0 => 'post' ),
+        'queue_new_post' => 0,
+        'tweet_text' => '{{TITLE}} - {{URL}}',
+        'loop' => 1
     );
     
     add_option( 'tw_queue_status', 'paused' );
-    add_option( 'tw_settings_settings', $default );
+    add_option( 'tw_settings_options', $default );
     add_option( 'tw_db_version', $tw_db_version );
     
 }

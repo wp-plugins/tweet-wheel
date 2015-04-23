@@ -1,20 +1,22 @@
 === Plugin Name ===
 Contributors: NerdCow
-Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic, schedule, scheduling, timing, loop
+Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic, schedule, scheduling, timing, loop, custom post type, woocommerce, shop, products, easy digital downloads, portfolio, tweet content, pages, page, e-commerce
 Requires at least: 3.8
-Tested up to: 4.1.1
-Stable tag: 0.4
+Tested up to: 4.2
+Stable tag: 0.5
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Automated and redefined post tweeting for every Wordpress blog. Precisely schedule your posts for tweeting using various and engaging templates.
+Automated and redefined post tweeting for every Wordpress website. Precisely schedule your posts for tweeting using various and engaging templates.
 
 == Description ==
 
-Tweet Wheel is a simple and yet powerful tool that every blogger will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from user's blog and take the burden off bloggers' shoulders and let them focus on the thing they are best at - writing. You can turn your website into a traffic-driving tool in no time.
+**Since version 0.5 Tweet Wheel handles custom post types meaning you can tweet about whatever type of content you like: blog entries, shop products, portfolio items and whatever you wish!**
 
-First, install and activate the plugin. You may notice not many options visible at start, but it's only until you authorise our Twitter app to access your Twitter account. Once authorised, you can enjoy your blog gaining on social media attention even when you are not looking.
+Tweet Wheel is a simple and yet powerful tool that every website owner will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from users' website and take the burden off their shoulders and let them focus on the thing they are best at. Turn your website into a traffic-and-business-driving tool in no time!
+
+First, install and activate the plugin. You may notice not many options visible at start, but it's only until you authorise our Twitter app to access your Twitter account. Once authorised, you can enjoy your website gaining on social media attention even when you are not looking.
 
 Unlike other Twitter plugins, this one works automatically and does not require your constant care. You can get up and running in a few clicks, but if you want to make more out of our solution, you can add multiple, interesting templates for each post. This will reduce your chance of sounding robotic and will let you test headings to see which one comes the most engaging.
 
@@ -23,6 +25,7 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * Automated queueing system, which is the core of the plugin. It handles all the automation.
 * Multi-templating for posts helps you to specify limitless amount of tweet variations for each post.
 * Advanced scheduling gives you more control over time of tweetings. Specify days and times at which you want your post published.
+* Handling of custom post types - fully compatible with woocommerceshop products!
 * Customising the queue let's you to supervise the order in which posts are tweeted.
 * Looping is optional, but very useful. If on, it will automatially append just tweeted post at the end of queue. Keeps going infinitely this way.
 * Queue posts on their publishing. When you create a new post you can ask plugin to automatically queue it for you.
@@ -37,7 +40,6 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * Twitter cards
 * Analytics
 * Multiple accounts
-* Custom post types
 * Custom tweets (not post related)
 * Hashtags suggestions
 * ... many more

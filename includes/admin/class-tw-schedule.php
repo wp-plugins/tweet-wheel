@@ -132,7 +132,7 @@ class TW_Schedule {
      */
     
     public function times_settings() {
-
+		
         ?>
 
         <div class="times-wrapper">
@@ -140,7 +140,7 @@ class TW_Schedule {
             <h4><?php _e( 'Tweeting Times', 'tweet-wheel' ); ?></h4>
 
             <a href="#" id="add-new-time" class="button">Add a Tweeting Time</a>
-            
+
             <ul class="times">
             
                 <?php
@@ -248,7 +248,7 @@ class TW_Schedule {
      */
     
     public function has_times() {
-     
+
         if( ! isset( $this->settings['times'] ) || empty( $this->settings['times'] ) )
             return false;
         

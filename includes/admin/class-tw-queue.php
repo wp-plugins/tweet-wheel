@@ -37,6 +37,7 @@ class TW_Queue {
      * @type function
      * @date 28/01/2015
 	 * @since 0.1
+	 * @updated 0.5
      *
      * @param n/a
 	 * @return n/a
@@ -52,13 +53,24 @@ class TW_Queue {
         add_filter( 'tw_load_admin_menu', array( $this, 'menu' ) );
         
         // Add some post actions to the post list screen
-        add_filter( 'post_row_actions', array( $this, 'post_row_queue' ), 10, 2);
         add_filter( 'admin_footer-edit.php', array( $this, 'bulk_queue_option' ) );
         add_action( 'load-edit.php', array( $this, 'bulk_queue' ) );
         add_action( 'admin_notices', array( $this, 'bulk_queue_admin_notice' ) );
         
         // Hooks to action on particular post status changes
-        add_action( 'publish_post', array( $this, 'on_publish_post' ), 999, 1 );
+		$post_types = get_all_enabled_post_types();
+		
+		if( $post_types != '' ) :
+			
+			foreach( $post_types as $post_type ) :
+				
+				add_filter( $post_type . '_row_actions', array( $this, 'post_row_queue' ), 10, 2);
+				add_action( 'publish_' . $post_type, array( $this, 'on_publish_or_update' ), 999, 1 );
+				
+     	   	endforeach;
+		
+		endif;
+		
         add_action( 'transition_post_status', array( $this, 'on_unpublish_post' ), 999, 3 );
         
         // AJAX actions        
@@ -329,7 +341,7 @@ class TW_Queue {
         if( $data == null ) :
             
             $args = apply_filters( 'tw_queue_fill_up_args', array(
-                'post_type' => 'post',
+                'post_type' => get_all_enabled_post_types(),
                 'post_status' => 'publish',
                 'posts_per_page' => -1
             ) );
@@ -479,7 +491,7 @@ class TW_Queue {
     public function post_row_queue( $actions, $post ) {
         
         //check for your post type
-        if ( $post->post_type == "post" && $post->post_status == "publish" ) :
+        if ( is_post_type_enabled( $post->post_type ) && $post->post_status == "publish" ) :
 
             if( $this->is_item_excluded( $post->ID ) ) 
                 
@@ -517,22 +529,26 @@ class TW_Queue {
     public function bulk_queue_option() {
         
         global $post_type;
- 
-          if($post_type == 'post') {
-            ?>
-            <script type="text/javascript">
-              jQuery(document).ready(function() {
-                  jQuery("select[name^='action']").append('<option disabled></option><option disabled>Tweet Wheel</option>');
-                  jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action2']");
-                  jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action2']");
-                  jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action2']");
-              });
-            </script>
-            <?php
-          }
+
+		if( is_post_type_enabled( $post_type ) ) {
+			
+		?>
+		
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+			jQuery("select[name^='action']").append('<option disabled></option><option disabled>Tweet Wheel</option>');
+			jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action']");
+			jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action2']");
+			jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action']");
+			jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action2']");
+			jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action']");
+			jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action2']");
+			});
+		</script>
+		
+		<?php
+		
+		}
         
     }
     
@@ -577,7 +593,7 @@ class TW_Queue {
             }
 
             // build the redirect url
-            $sendback = add_query_arg( array('queued' => $queued ), $sendback );
+            $sendback = add_query_arg( array('queued' => $queued , 'post_type' => get_post_type( $post_id ) ), $sendback );
 
             break;
 
@@ -591,7 +607,7 @@ class TW_Queue {
             }
 
             // build the redirect url
-            $sendback = add_query_arg( array('dequeued' => $dequeued ), $sendback );
+            $sendback = add_query_arg( array('dequeued' => $dequeued, 'post_type' => get_post_type( $post_id ) ), $sendback );
             
             break;
             
@@ -605,7 +621,7 @@ class TW_Queue {
             }
 
             // build the redirect url
-            $sendback = add_query_arg( array('excluded' => $excluded ), $sendback );
+            $sendback = add_query_arg( array('excluded' => $excluded, 'post_type' => get_post_type( $post_id ) ), $sendback );
             
             break;
 
@@ -637,35 +653,35 @@ class TW_Queue {
     
     public function bulk_queue_admin_notice() {
  
-      global $post_type, $pagenow;
- 
-      // Posts queued
- 
-      if($pagenow == 'edit.php' && $post_type == 'post' &&
-         isset($_REQUEST['queued']) && (int) $_REQUEST['queued']) {
-        $message = sprintf( _n( 'Post queued.', '%s posts queued.', $_REQUEST['queued'] ), number_format_i18n( $_REQUEST['queued'] ) );
-        echo '<div class="updated"><p>' . $message . '</p></div>';
-      }
-      
-      // ...
-      
-      // Posts dequeued
-      
-      if($pagenow == 'edit.php' && $post_type == 'post' &&
-         isset($_REQUEST['dequeued']) && (int) $_REQUEST['dequeued']) {
-        $message = sprintf( _n( 'Post dequeued.', '%s posts dequeued.', $_REQUEST['dequeued'] ), number_format_i18n( $_REQUEST['dequeued'] ) );
-        echo '<div class="updated"><p>' . $message . '</p></div>';
-      }
-      
-      // ...
-      
-      // Posts excluded
-      
-      if($pagenow == 'edit.php' && $post_type == 'post' &&
-         isset($_REQUEST['excluded']) && (int) $_REQUEST['excluded']) {
-        $message = sprintf( _n( 'Post excluded.', '%s posts excluded.', $_REQUEST['excluded'] ), number_format_i18n( $_REQUEST['excluded'] ) );
-        echo '<div class="updated"><p>' .$message .'</p></div>';
-      }
+		global $post_type, $pagenow;
+
+		// Posts queued
+
+		if($pagenow == 'edit.php' && is_post_type_enabled( $post_type ) &&
+			isset($_REQUEST['queued']) && (int) $_REQUEST['queued']) {
+			$message = sprintf( _n( 'Post queued.', '%s posts queued.', $_REQUEST['queued'] ), number_format_i18n( $_REQUEST['queued'] ) );
+			echo '<div class="updated"><p>' . $message . '</p></div>';
+		}
+
+		// ...
+
+		// Posts dequeued
+
+		if($pagenow == 'edit.php' && is_post_type_enabled( $post_type ) &&
+			isset($_REQUEST['dequeued']) && (int) $_REQUEST['dequeued']) {
+			$message = sprintf( _n( 'Post dequeued.', '%s posts dequeued.', $_REQUEST['dequeued'] ), number_format_i18n( $_REQUEST['dequeued'] ) );
+			echo '<div class="updated"><p>' . $message . '</p></div>';
+		}
+
+		// ...
+
+		// Posts excluded
+
+		if($pagenow == 'edit.php' && is_post_type_enabled( $post_type ) &&
+			isset($_REQUEST['excluded']) && (int) $_REQUEST['excluded']) {
+			$message = sprintf( _n( 'Post excluded.', '%s posts excluded.', $_REQUEST['excluded'] ), number_format_i18n( $_REQUEST['excluded'] ) );
+			echo '<div class="updated"><p>' .$message .'</p></div>';
+		}
       
     }
     
@@ -850,7 +866,7 @@ class TW_Queue {
 	 * @return n/a
      */
     
-    public function on_publish_post( $post_id ) {
+    public function on_publish_or_update( $post_id ) {
         
         // Load meta once for performance...
         $meta = get_post_meta( $post_id, 'tw_post_excluded' );
@@ -861,6 +877,8 @@ class TW_Queue {
             $meta == ''  
         )
             return;
+			
+			
         
         // check if post is only just published...
         // I know the new_post hook, but this works just fine

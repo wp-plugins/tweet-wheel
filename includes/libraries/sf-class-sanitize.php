@@ -29,6 +29,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 			add_filter( 'geczy_sanitize_select', array( 'SF_Sanitize', 'sanitize_enum' ), 10, 2 );
 			add_filter( 'geczy_sanitize_single_select_page', array( 'SF_Sanitize', 'sanitize_select_pages' ), 10, 2 );
             add_filter( 'geczy_sanitize_times', array( 'SF_Sanitize', 'sanitize_schedule_times' ), 10, 2 );
+			add_filter( 'geczy_sanitize_post_type', array( 'SF_Sanitize', 'sanitize_post_type' ), 10, 1 );
             
 		}
 
@@ -180,9 +181,16 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
             return $output;
         
         }
-
-
+	
+		// ...
+	
+	    public function sanitize_post_type( $input ) { 
+		
+	        return $input;
+    
+	    }
+		
 	}
-
+	
 
 }

@@ -264,3 +264,46 @@ function ajax_tweet() {
     exit;
     
 }
+
+// ...
+
+/**
+ * Retrieves registered post types
+ *
+ * @type function
+ * @date 22/04/2015
+ * @since 0.5
+ *
+ * @param N/A
+ * @return json
+ **/
+
+function ajax_get_post_types() {
+	
+    check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
+
+    if ( current_user_can( 'manage_options' ) ) :
+		
+		$post_types = get_post_types( array( 'public' => true ), 'objects' );
+		
+		if( empty( $post_types ) ) :
+			
+			echo json_encode( array( 'response' => 'error', 'message' => 'No public post types enabled.' ) );
+			
+			exit;
+			
+		endif;
+
+		echo json_encode( array( 'response' => 'success', 'data' => $post_types ) );
+		
+		exit;
+		
+	endif;
+	
+    echo json_encode( array( 'response' => 'error' ) );
+    
+    exit;
+	
+}
+
+// ...

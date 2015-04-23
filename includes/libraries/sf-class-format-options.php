@@ -243,7 +243,7 @@ if ( ! class_exists( 'SF_Format_Options' ) ) {
 					  ><?php echo ( $value !== false ) ? $value : $std; ?></textarea>
 					<?php echo $description;
 			break;
-
+			
 		case 'wysiwyg':
 			wp_editor( $value, $id, array( 'textarea_name' => $name ) );
 			echo $description;
