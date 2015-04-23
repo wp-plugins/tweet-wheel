@@ -1,8 +1,30 @@
 <?php
 
+/**
+ * Main class TW_Menus
+ *
+ * The idea is to be the superior class handling menus.
+ * I wanted it to be extensible by hooks. Maybe it will come useful later.
+ *
+ * @class TW_Menus
+ */
+
 class TW_Menus {
     
     private $menus = array();
+    
+    // ...
+    
+    /**
+     * Class constructor
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function __construct() {
         
@@ -19,9 +41,18 @@ class TW_Menus {
         
     }
     
+    // ...
+    
     /**
-     * Add main Tweet Wheel plugin menu tab
-     */
+     * Adds main parent menu tab Tweet Wheel
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function menu() {
         
@@ -39,8 +70,15 @@ class TW_Menus {
     // ...
     
     /**
-     * Add submenus
-     */
+     * Add submenus. Here is where other classes add their own tabs.
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function submenu() {
         
@@ -66,4 +104,5 @@ class TW_Menus {
     
 }
 
+// Initiate
 new TW_Menus;

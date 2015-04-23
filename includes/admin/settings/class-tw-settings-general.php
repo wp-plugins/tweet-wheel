@@ -1,9 +1,8 @@
 <?php
 
 class TW_Settings_General {
-    
-    private $plugin_path;
-    private $wpsf;
+	
+	private $settings_framework = null;
     
     public function __construct() {
         
@@ -12,14 +11,17 @@ class TW_Settings_General {
             return;
         
         add_filter( 'tw_load_admin_menu', array( $this, 'menu' ) );
-        
-        $this->plugin_path = plugin_dir_path( __FILE__ );
 
-        $this->wpsf = new TW_Settings();
-        $this->wpsf->set_setting( $this->plugin_path .'settings/settings.php', 'tw_settings' );
-        // Add an optional settings validation filter (recommended)
-        add_filter( $this->wpsf->get_option_group() .'_settings_validate', array(&$this, 'validate_settings') );
-        
+		$this->settings_framework = new SF_Settings_API( $id = 'tw_settings', $title = '', __FILE__);
+		
+		$this->settings_framework->load_options( dirname( __FILE__ ) . '/options/option.php');
+		
+		add_action( 'wp_ajax_get_post_types', 'ajax_get_post_types' );
+
+		add_filter( 'tw_settings_tab_options-general', array( $this, 'post_type_value' ), 10, 2 );
+		add_action( 'tw_settings_options_type_post_type', array( $this, 'post_type_settings' ) );
+		add_action( 'tw_settings_after_form_tab-general', array( $this, 'post_type_js' ) );
+
     }
     
     public function menu( $menu ) {
@@ -38,23 +40,92 @@ class TW_Settings_General {
     public function page() {
         
 	    ?>
-		<div class="wrap">
-			<h2><img class="alignleft" style="margin-right:10px;" src="<?php echo TW_PLUGIN_URL . '/assets/images/tweet-wheel-page-icon.png'; ?>"> General Settings</h2>
-			<?php
-			// Output your settings form
-			$this->wpsf->settings();
-			?>
+		<div class="wrap tw-settings-page">
+			<h2><img class="alignleft" style="margin-right:10px;" src="<?php echo TW_PLUGIN_URL . '/assets/images/tweet-wheel-page-icon.png'; ?>"><?php _e( 'Tweet Wheel Settings', 'tweetwheel' ); ?></h2>
+			<?php $this->settings_framework->init_settings_page(); ?>
 		</div>
 		<?php
         
     }
-    
-	function validate_settings( $input )
-	{
-	    // Do your settings validation here
-	    // Same as $sanitize_callback from http://codex.wordpress.org/Function_Reference/register_setting
-    	return $input;
+	
+	public function post_type_settings() {
+		
+		echo '<div id="post_type_wrapper"></div>';
+		
 	}
-    
+	
+    public function post_type_value( $tabs, $post ) {
+
+        if( ! isset( $tabs['general'] ) )
+            return $tabs;
+        
+        if( ! isset( $post['post_type'] ) )
+            $post['post_type'] = array();
+
+        $tabs['general'][] = array(
+            'name' => __( 'Allowed post types', 'tweet-wheel' ),
+            'id' => 'post_type',
+            'type' => 'post_type',
+            'options' => $post['post_type']
+        );
+        
+        return $tabs;
+        
+    }
+	
+	public function post_type_js() {
+		
+		$options = tw_get_option( 'tw_settings', 'post_type' );
+		
+		?>
+		
+		<script>
+		
+		$(window).load(function(){
+	
+			var el = $('#post_type_wrapper');
+			var post_types = $.parseJSON('<?php echo json_encode($options); ?>');
+		
+			if( el.length == 0 )
+				return;
+		
+			el.text( 'Loading...' );
+		
+			$.get(
+				ajaxurl, 
+				{
+					action: 'get_post_types',
+					twnonce: TWAJAX.twNonce
+				},
+				function( response ) {
+				
+					var data = $.parseJSON( response );
+				
+					if( data.response == 'error' ) {
+						el.text( data.message );
+					}
+				
+					el.empty();
+
+					$.each( data.data, function( k,v ) {
+						
+						var is_checked = $.inArray( k, post_types ) != -1 ? true : false;
+					
+						var html = '<label for="post_type_'+k+'"><input name="tw_settings_options[post_type][]" id="post_type_'+k+'" type="checkbox" value="'+k+'" '+( is_checked ? 'checked' : '' )+'>'+v.label+'</label><br/>';
+
+						el.append(html);
+					
+					} );
+				
+				}
+			);
+		
+		});
+		
+		</script>
+		
+		<?php		
+	}
+
 }
-return new TW_Settings_General;
+new TW_Settings_General;
