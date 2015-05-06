@@ -307,8 +307,9 @@ class TW_Queue {
         </ul>
         <span id="queue-status">Status: <?php echo $this->get_queue_status() == 'paused' ? 'Paused' : 'Running' ?></span>
         <script>
-        $(document).ready(function(){
-           $('#tw-empty-queue').click(function(){
+        jQuery.noConflict();
+        jQuery(document).ready(function(){
+           jQuery('#tw-empty-queue').click(function(){
                var r = confirm("Are you sure? This will remove ALL your posts from Tweet Wheel's Queue!");
                if (r == true) {
                    window.location.href = '<?php echo admin_url( '/admin.php?page=tw_queue&tw_remove_all=true' ); ?>';

@@ -80,18 +80,18 @@ class TW_Settings_General {
 		?>
 		
 		<script>
-		
-		$(window).load(function(){
+		jQuery.noConflict();
+		jQuery(window).load(function(){
 	
-			var el = $('#post_type_wrapper');
-			var post_types = $.parseJSON('<?php echo json_encode($options); ?>');
+			var el = jQuery('#post_type_wrapper');
+			var post_types = jQuery.parseJSON('<?php echo json_encode($options); ?>');
 		
 			if( el.length == 0 )
 				return;
 		
 			el.text( 'Loading...' );
 		
-			$.get(
+			jQuery.get(
 				ajaxurl, 
 				{
 					action: 'get_post_types',
@@ -99,7 +99,7 @@ class TW_Settings_General {
 				},
 				function( response ) {
 				
-					var data = $.parseJSON( response );
+					var data = jQuery.parseJSON( response );
 				
 					if( data.response == 'error' ) {
 						el.text( data.message );
@@ -107,9 +107,9 @@ class TW_Settings_General {
 				
 					el.empty();
 
-					$.each( data.data, function( k,v ) {
+					jQuery.each( data.data, function( k,v ) {
 						
-						var is_checked = $.inArray( k, post_types ) != -1 ? true : false;
+						var is_checked = jQuery.inArray( k, post_types ) != -1 ? true : false;
 					
 						var html = '<label for="post_type_'+k+'"><input name="tw_settings_options[post_type][]" id="post_type_'+k+'" type="checkbox" value="'+k+'" '+( is_checked ? 'checked' : '' )+'>'+v.label+'</label><br/>';
 

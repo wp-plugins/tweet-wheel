@@ -1,8 +1,8 @@
-$ = jQuery.noConflict();
+jQuery.noConflict();
 
 // ...
 
-$(function(){
+jQuery(function(){
 	
 	/**
 	 * Custom Tweet Metabox Counter and Parsing
@@ -11,52 +11,52 @@ $(function(){
 	 */
 
     // Count characters and display on page load
-    $(window).load(function(){
+    jQuery(window).load(function(){
 
-        $('textarea').autosize();
+        jQuery('textarea').autosize();
 
     });
 
     // Handle custom tweet text box input and update counter
-    $(document).on('keyup keydown','.tweet-template-textarea', function(e) {
+    jQuery(document).on('keyup keydown','.tweet-template-textarea', function(e) {
 
         // ...
-        var count = tw_character_counter( $(this).val() );
-        $(this).parent().find('.counter').text( count );
+        var count = tw_character_counter( jQuery(this).val() );
+        jQuery(this).parent().find('.counter').text( count );
     
         if( count > 140 ) {
-            $(this).parent().find('.counter').addClass( 'too-long' );   
+            jQuery(this).parent().find('.counter').addClass( 'too-long' );   
         } else {
-            $(this).parent().find('.counter').removeClass( 'too-long' );
+            jQuery(this).parent().find('.counter').removeClass( 'too-long' );
         }
 
         // ...
 
-        $('#tweet-preview').text( $(this).val() ); 
+        jQuery('#tweet-preview').text( jQuery(this).val() ); 
 
     } );
 
-	$( "#tw-schedule label[for^=day]" ).click(function(){
+	jQuery( "#tw-schedule label[for^=day]" ).click(function(){
 		
-		if( $(this).find('input').is(':checked') ) {
-			$(this).addClass('active');
+		if( jQuery(this).find('input').is(':checked') ) {
+			jQuery(this).addClass('active');
 		} else {
-			$(this).removeClass('active');
+			jQuery(this).removeClass('active');
 		}
 		
 	});
     
     // ...
     
-    $('#add-new-time').click(function(e) {
+    jQuery('#add-new-time').click(function(e) {
         
         e.preventDefault();
        
-        var template = $('.time-template').html();
+        var template = jQuery('.time-template').html();
         var last_index = 0;
         
-        if( $('.times li').length != 0 ) { 
-            last_index = $('.times li').last().data('index');
+        if( jQuery('.times li').length != 0 ) { 
+            last_index = jQuery('.times li').last().data('index');
             last_index++;
         }
         
@@ -64,17 +64,17 @@ $(function(){
         
         console.log(template.match(/\[(\d+)\]/)[1]);
         
-        $('.times').append( '<li data-index="'+last_index+'">' + template + '</li>' );
+        jQuery('.times').append( '<li data-index="'+last_index+'">' + template + '</li>' );
         
     });
     
     // ...
     
-    $(document).on( 'click', '.remove-time', function(e) {
+    jQuery(document).on( 'click', '.remove-time', function(e) {
         
         e.preventDefault();
         
-        $(this).parent().remove();
+        jQuery(this).parent().remove();
         
     });
 	
@@ -86,26 +86,30 @@ $(function(){
 
 */
 
-$(function() {
+jQuery(function() {
     
-    $( "#the-queue ul" ).sortable({
-        handle : '.drag-handler',
-        update : function() {
-            $('#save-the-queue').removeClass('disabled').text('Save Changes');
-        }
+    jQuery(document).ready(function() {
+    
+        jQuery( "#the-queue ul" ).sortable({
+            handle : '.drag-handler',
+            update : function() {
+                jQuery('#save-the-queue').removeClass('disabled').text('Save Changes');
+            }
+        });
+        
     });
     
-    $('#save-the-queue').click(function(e){
+    jQuery('#save-the-queue').click(function(e){
         e.preventDefault();
         
-        if($(this).hasClass('disabled')) {
+        if(jQuery(this).hasClass('disabled')) {
             return;
         }
         
-        $('#save-the-queue').addClass('saving disabled').text('Saving...');
-        var data = $('#the-queue > ul').sortable('toArray');
+        jQuery('#save-the-queue').addClass('saving disabled').text('Saving...');
+        var data = jQuery('#the-queue > ul').sortable('toArray');
 
-        $.post( 
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'save_queue', 
@@ -113,9 +117,9 @@ $(function() {
                 queue_order : data
             }, 
             function(response){
-                var data = $.parseJSON(response);
+                var data = jQuery.parseJSON(response);
                 if( data.response == 'ok' ) {
-                    $('#save-the-queue').removeClass('saving').addClass('disabled').text('All Saved');
+                    jQuery('#save-the-queue').removeClass('saving').addClass('disabled').text('All Saved');
                 } else {
                     alert( "Couldn't save changes. Not sure why... Restored original queue!" );
                 }
@@ -123,14 +127,14 @@ $(function() {
         ); 
     });
 
-    $( ".post-header .title" ).click(function() {
-        $(this).parent().parent().find( ".post-content" ).toggle();
+    jQuery( ".post-header .title" ).click(function() {
+        jQuery(this).parent().parent().find( ".post-content" ).toggle();
     });
     
-    $('#empty-queue-alert-hide').click(function(e){
+    jQuery('#empty-queue-alert-hide').click(function(e){
         e.preventDefault();
-        $('.tw-empty-queue-alert').slideUp();
-        $.post( 
+        jQuery('.tw-empty-queue-alert').slideUp();
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'empty_queue_alert', 
@@ -141,10 +145,10 @@ $(function() {
     
     // ...
     
-    $('#wp-cron-alert-hide').click(function(e){
+    jQuery('#wp-cron-alert-hide').click(function(e){
         e.preventDefault();
-        $('.tw-wp-cron-alert').slideUp();
-        $.post( 
+        jQuery('.tw-wp-cron-alert').slideUp();
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'wp_cron_alert', 
@@ -155,12 +159,12 @@ $(function() {
     
     // ...
 
-    $('#change-queue-status').click(function(e){
+    jQuery('#change-queue-status').click(function(e){
         e.preventDefault();
         
-        $('#change-queue-status').addClass('disabled').text('Working...');
+        jQuery('#change-queue-status').addClass('disabled').text('Working...');
         
-        $.post( 
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'change_queue_status',
@@ -168,18 +172,18 @@ $(function() {
             }, 
             function(response) {
             
-                var data = $.parseJSON(response);
+                var data = jQuery.parseJSON(response);
             
-                $('#change-queue-status').removeClass('disabled')
+                jQuery('#change-queue-status').removeClass('disabled')
             
                 if( data.response == 'paused' ) {
-                    $('#change-queue-status').text('Resume');
-                    $('#queue-status').text( 'Status: Paused' );
+                    jQuery('#change-queue-status').text('Resume');
+                    jQuery('#queue-status').text( 'Status: Paused' );
                 } else if( data.response == 'running' ) {
-                    $('#change-queue-status').text('Pause');
-                    $('#queue-status').text( 'Status: Running' );
+                    jQuery('#change-queue-status').text('Pause');
+                    jQuery('#queue-status').text( 'Status: Running' );
                 } else {
-                    $('#change-queue-status').text('Error :(');
+                    jQuery('#change-queue-status').text('Error :(');
                 }
         
             } 
@@ -188,12 +192,12 @@ $(function() {
         
     });
     
-    $('#tw-simple-view').click(function(e){
+    jQuery('#tw-simple-view').click(function(e){
         
         e.preventDefault();
         
-        $(this).toggleClass('active');
-        $('#the-queue').find('> ul').toggleClass('simple');
+        jQuery(this).toggleClass('active');
+        jQuery('#the-queue').find('> ul').toggleClass('simple');
          
     });
     
@@ -201,15 +205,15 @@ $(function() {
      * Tweet Now available on the Queue screen
      */
     
-    $('.tweet-now').click(function(e){
+    jQuery('.tweet-now').click(function(e){
        
         e.preventDefault();
         
-        var el = $(this);
+        var el = jQuery(this);
         
         el.text('Tweeting...');
         
-        $.post( 
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'tweet', 
@@ -218,11 +222,11 @@ $(function() {
             }, 
             function( response ) {
 
-                var data = $.parseJSON( response );
+                var data = jQuery.parseJSON( response );
 
                 if( data.response == "error" ) {
                 
-                    $('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
+                    jQuery('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
                 
                     el.text('Tweet Now');
                 
@@ -230,7 +234,7 @@ $(function() {
                 
                 } else {
                 
-                    $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
+                    jQuery('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
                 
                 }
             
@@ -241,15 +245,15 @@ $(function() {
     
     // ...
     
-    $(document).on('click','.tw-dequeue-post',function(e){
+    jQuery(document).on('click','.tw-dequeue-post',function(e){
        
         e.preventDefault();
         
-        var el = $(this);
+        var el = jQuery(this);
         
         el.text('Dequeuing...');
         
-        $.post( 
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'remove_from_queue', 
@@ -258,7 +262,7 @@ $(function() {
             }, 
             function( response ) {
             
-                var data = $.parseJSON( response );
+                var data = jQuery.parseJSON( response );
             
                 if( data.response == "error" ) {
                 
@@ -279,15 +283,15 @@ $(function() {
     
     // ...
     
-    $(document).on('click','.tw-queue-post',function(e){
+    jQuery(document).on('click','.tw-queue-post',function(e){
        
         e.preventDefault();
         
-        var el = $(this);
+        var el = jQuery(this);
         
         el.text('Queuing...');
         
-        $.post( 
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'add_to_queue', 
@@ -296,7 +300,7 @@ $(function() {
             }, 
             function( response ) {
             
-                var data = $.parseJSON( response );
+                var data = jQuery.parseJSON( response );
             
                 if( data.response == "error" ) {
                 
@@ -317,15 +321,15 @@ $(function() {
 
     // ...
 
-    $('.tw-dequeue').click(function(e){
+    jQuery('.tw-dequeue').click(function(e){
        
         e.preventDefault();
         
-        var el = $(this);
+        var el = jQuery(this);
         
         el.text('Removing...');
         
-        $.post( 
+        jQuery.post( 
             ajaxurl, 
             { 
                 action: 'remove_from_queue', 
@@ -334,11 +338,11 @@ $(function() {
             },
             function( response ) {
             
-                var data = $.parseJSON( response );
+                var data = jQuery.parseJSON( response );
             
                 if( data.response == "error" ) {
                 
-                    $('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
+                    jQuery('#'+el.data('post-id')).animate({backgroundColor:'red'}, 300).animate({backgroundColor:'#fff'}, 300);
                 
                     el.text('Remove');
                 
@@ -346,9 +350,9 @@ $(function() {
                 
                 } else {
                 
-                    $('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
+                    jQuery('#'+el.data('post-id')).css( 'background', '#00AB2B' ).slideUp().remove();
 					
-					if( $('#tw-queue .the-queue-item').length == 0 ) {
+					if( jQuery('#tw-queue .the-queue-item').length == 0 ) {
 						
 						location.reload();
 						
@@ -363,15 +367,15 @@ $(function() {
     
     // ...
     
-    $('.show-all-templates').click(function(e) {
+    jQuery('.show-all-templates').click(function(e) {
         
         e.preventDefault();
 
-        $(this).parent().find('li').not(':first-child').toggleClass('visible');
+        jQuery(this).parent().find('li').not(':first-child').toggleClass('visible');
         
     });
 
-} );
+});
 
 function tw_character_counter( raw ) {
     
