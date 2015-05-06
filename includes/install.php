@@ -50,6 +50,7 @@ function tw_install() {
 
     // Load default settings
     tw_load_settings();
+    tw_schedule_task();
     
 }
 
@@ -71,14 +72,14 @@ function tw_load_settings() {
     global $tw_db_version;
     
     $default = array(
-        'tw_settings_global_queue_new_post' => 0,
-        'tw_settings_template_tweet_text' => '{{TITLE}} - {{URL}}',
-        'tw_settings_timing_post_interval' => 180,
-        'tw_settings_timing_loop' => 1
+		'post_type' => array( 0 => 'post' ),
+        'queue_new_post' => 0,
+        'tweet_text' => '{{TITLE}} - {{URL}}',
+        'loop' => 1
     );
     
     add_option( 'tw_queue_status', 'paused' );
-    add_option( 'tw_settings_settings', $default );
+    add_option( 'tw_settings_options', $default );
     add_option( 'tw_db_version', $tw_db_version );
     
 }
@@ -100,3 +101,22 @@ function tw_after_activate() {
     add_option('tw_activation_redirect', true);
 }
 
+// ...
+
+/**
+ * Schedule Cron Job
+ *
+ * @type function
+ * @date 03/04/2015
+ * @since 0.4
+ *
+ * @param N/A
+ * @return N/A
+ **/
+
+function tw_schedule_task() {
+    
+    if( ! wp_next_scheduled( 'tweet_wheel' ) )
+        wp_schedule_event( time(), 'minutely', 'tweet_wheel' );
+
+}  
