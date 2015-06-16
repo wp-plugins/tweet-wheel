@@ -35,14 +35,18 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * Simple view which minifies the queue look so you can fit more items on your screen - helpful for shuffling!
 * Health check tab that let's you know if your website is ready for Tweet Wheel and what to fix.
 
-**Coming soon**
 
-* Twitter cards
-* Analytics
-* Multiple accounts
-* Custom tweets (not post related)
-* Hashtags suggestions
-* ... many more
+#### Upgrade to PRO
+* Attach **featured images** to your tweets with one click.
+* Use your favorite domain for **shortening URLs** (by Bit.ly).
+* **Track clicks** and tweets history of individual tweeted templates.
+* Fill up the queue using **filtering by date range, amount and post type**.
+* Plenty minor improvements which overally boost user experience and easy of use.
+* **Premium support**
+
+[CLICK HERE TO UPGRADE](http://codecanyon.net/item/tweet-wheel-pro-automated-tweeting-for-wordpress/11802003)
+
+**If upgrading, please uninstall free version first!**
 
 If you have a suggestion for improvement or a new feature, feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us).
 
