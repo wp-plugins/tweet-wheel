@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Main class of TW_Queue
+ *
+ * @class TW_Queue
+ */
+
 class TW_Queue {
     
     public static $_instance = null;
@@ -15,6 +21,7 @@ class TW_Queue {
 	 * @static
 	 * @return TW_Queue object
 	 */
+    
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
@@ -27,7 +34,12 @@ class TW_Queue {
 	/**
 	 * TW_Queue _construct
      *
+     * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+	 * @updated 0.5
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -41,16 +53,24 @@ class TW_Queue {
         add_filter( 'tw_load_admin_menu', array( $this, 'menu' ) );
         
         // Add some post actions to the post list screen
-        add_filter( 'post_row_actions', array( $this, 'post_row_queue' ), 10, 2);
         add_filter( 'admin_footer-edit.php', array( $this, 'bulk_queue_option' ) );
         add_action( 'load-edit.php', array( $this, 'bulk_queue' ) );
         add_action( 'admin_notices', array( $this, 'bulk_queue_admin_notice' ) );
         
-        // Add 15 minutes cron job
-        add_filter( 'cron_schedules', array( $this, 'cron_add_every_fifteen_minutes' ) );
-        
         // Hooks to action on particular post status changes
-        add_action( 'publish_post', array( $this, 'on_publish_post' ), 999, 1 );
+		$post_types = get_all_enabled_post_types();
+		
+		if( $post_types != '' ) :
+			
+			foreach( $post_types as $post_type ) :
+				
+				add_filter( $post_type . '_row_actions', array( $this, 'post_row_queue' ), 10, 2);
+				add_action( 'publish_' . $post_type, array( $this, 'on_publish_or_update' ), 999, 1 );
+				
+     	   	endforeach;
+		
+		endif;
+		
         add_action( 'transition_post_status', array( $this, 'on_unpublish_post' ), 999, 3 );
         
         // AJAX actions        
@@ -59,11 +79,7 @@ class TW_Queue {
         add_action( 'wp_ajax_change_queue_status', 'ajax_change_queue_status' );
         add_action( 'wp_ajax_remove_from_queue', 'ajax_remove_from_queue' );
         add_action( 'wp_ajax_add_to_queue', 'ajax_add_to_queue' );
-        
-        // CRON
-        add_action( 'init', array( $this, 'cron' ), 999 );
-        add_action( 'tw_cron_job', array( $this, 'run_queue' ) );
-        
+    
         // Display notice about empty queue
         if( $this->has_queue_items() == false && ! get_transient( '_tw_empty_queue_alert_' . get_current_user_id() ) )
             add_action( 'admin_notices', array( $this, 'alert_empty_queue' ), 999 );
@@ -88,13 +104,15 @@ class TW_Queue {
     
     // ...
     
-    // ...
-    
 	/**
 	 * Adds "Queue" item to the Tweet Wheel menu tab
 	 *
+     * @type function
+     * @date 28/01/2015
 	 * @since 0.1
-	 * @return n/a
+     * 
+     * @param array
+	 * @return array
 	 */
     
     public function menu( $menu ) {
@@ -115,7 +133,11 @@ class TW_Queue {
 	/**
 	 * Loads the Queue screen
 	 *
+     * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -156,7 +178,11 @@ class TW_Queue {
 	/**
 	 * Admin notice showed when queue is empty
 	 *
+     * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -173,7 +199,11 @@ class TW_Queue {
 	/**
 	 * Toolbar for each item in the queue
 	 *
+     * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -209,6 +239,8 @@ class TW_Queue {
         if( ! is_array( $item_tools ) || empty( $item_tools ) )
             return;
         
+        echo '<div class="queue-item-sidebar clear">';
+        
         echo '<ul class="queue-item-tools">';
         
         foreach( $item_tools as $item ) : 
@@ -233,6 +265,21 @@ class TW_Queue {
         
         echo '</ul>';
         
+        echo '<ul class="queue-icons">';
+        
+        if( TW()->tweet()->has_custom_templates( $post_id ) )  
+            echo '<li><span title="Custom template" class="dashicons dashicons-admin-tools"></span></li>';
+           
+        if( TW()->tweet()->has_multiple_templates( $post_id ) )  
+            echo '<li><span title="Multiple templates" class="dashicons dashicons-screenoptions"></span></li>';
+        
+        if( TW()->tweet()->get_tweeting_order( $post_id ) == 'random' )
+            echo '<li><span title="Random order" class="dashicons dashicons-randomize"></span></li>';
+        
+        echo '</ul>';
+        
+        echo '</div>';
+        
     }
     
     // ...
@@ -240,7 +287,11 @@ class TW_Queue {
 	/**
 	 * Queue tools / buttons
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -256,8 +307,9 @@ class TW_Queue {
         </ul>
         <span id="queue-status">Status: <?php echo $this->get_queue_status() == 'paused' ? 'Paused' : 'Running' ?></span>
         <script>
-        $(document).ready(function(){
-           $('#tw-empty-queue').click(function(){
+        jQuery.noConflict();
+        jQuery(document).ready(function(){
+           jQuery('#tw-empty-queue').click(function(){
                var r = confirm("Are you sure? This will remove ALL your posts from Tweet Wheel's Queue!");
                if (r == true) {
                    window.location.href = '<?php echo admin_url( '/admin.php?page=tw_queue&tw_remove_all=true' ); ?>';
@@ -277,16 +329,20 @@ class TW_Queue {
      * 
      * @TODO: give user a bit more control over it
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
-    public function fill_up( $data = null ) {
+    public function fill_up( $data = null, $key = 'ID' ) {
         
         if( $data == null ) :
             
             $args = apply_filters( 'tw_queue_fill_up_args', array(
-                'post_type' => 'post',
+                'post_type' => get_all_enabled_post_types(),
                 'post_status' => 'publish',
                 'posts_per_page' => -1
             ) );
@@ -304,7 +360,7 @@ class TW_Queue {
         
         foreach( $posts as $p ) :
             
-            $this->insert_post( $p->ID );
+            $this->insert_post( $p->{$key} );
             
         endforeach;
         
@@ -316,7 +372,11 @@ class TW_Queue {
 	 * Inserts a post to the queue. Performs checks for duplication and exclusion. 
      * The check be skipped giving "true" as a value for last two parameters.
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return WP Insert | false
 	 */
     
@@ -349,7 +409,11 @@ class TW_Queue {
 	/**
 	 * Removes post from the queue
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -370,18 +434,19 @@ class TW_Queue {
 	/**
 	 * Excludes a post from the queue (and removes if exists)
 	 *
+     * @type function
+     * @date 04/03/2015
 	 * @since 0.3
+     * 
+     * @param int
 	 * @return boolean
 	 */
     
     public function exclude_post( $post_id ) {
         
         $this->remove_post( $post_id );
-        
-        $excluded = array( 0 => 1 );
-        $excluded = array_shift( $excluded );
 
-        update_post_meta( $post_id, 'post_exclude', $excluded );
+        update_post_meta( $post_id, 'tw_post_excluded', 1 );
         
         return true;
         
@@ -392,7 +457,11 @@ class TW_Queue {
 	/**
 	 * Unchecks the Post Exclude option (doesn't insert a post)
 	 *
+	 * @type function
+     * @date 04/03/2015
 	 * @since 0.3
+     *
+     * @param int
 	 * @return boolean
 	 */
     
@@ -411,15 +480,19 @@ class TW_Queue {
 	/**
 	 * Adds an action to posts on the edit.php screen
 	 *
+     * @type function
+     * @date 28/01/2015
+     * @update 04/03/2015 (0.3)
 	 * @since 0.1
-     * @update 0.3
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
     public function post_row_queue( $actions, $post ) {
         
         //check for your post type
-        if ( $post->post_type == "post" && $post->post_status == "publish" ) :
+        if ( is_post_type_enabled( $post->post_type ) && $post->post_status == "publish" ) :
 
             if( $this->is_item_excluded( $post->ID ) ) 
                 
@@ -427,7 +500,7 @@ class TW_Queue {
             
             else if( $this->is_item_queued( $post->ID ) ) :
                 
-                $actions['dequeue'] = '<a class="tw-dequeue-post" style="color:#a00" data-post-id="'.$post->ID.'">Dequeue</a>';
+                $actions['dequeue'] = '<a href="#" class="tw-dequeue-post" style="color:#a00" data-post-id="'.$post->ID.'">Dequeue</a>';
                 
             else :
                 
@@ -446,29 +519,37 @@ class TW_Queue {
 	/**
 	 * Injects options to Bulk Actions dropdown on the edit.php screen
 	 *
+	 * @type function
+     * @date 04/03/2015
 	 * @since 0.3
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
     public function bulk_queue_option() {
         
         global $post_type;
- 
-          if($post_type == 'post') {
-            ?>
-            <script type="text/javascript">
-              jQuery(document).ready(function() {
-                  jQuery("select[name='action']").append('<option disabled></option><option disabled>Tweet Wheel</option>');
-                  jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action2']");
-                  jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action2']");
-                  jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action']");
-                  jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action2']");
-              });
-            </script>
-            <?php
-          }
+
+		if( is_post_type_enabled( $post_type ) ) {
+			
+		?>
+		
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+			jQuery("select[name^='action']").append('<option disabled></option><option disabled>Tweet Wheel</option>');
+			jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action']");
+			jQuery('<option>').val('queue').text('- <?php _e('Queue')?>').appendTo("select[name='action2']");
+			jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action']");
+			jQuery('<option>').val('dequeue').text('- <?php _e('Dequeue')?>').appendTo("select[name='action2']");
+			jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action']");
+			jQuery('<option>').val('exclude').text('- <?php _e('Exclude')?>').appendTo("select[name='action2']");
+			});
+		</script>
+		
+		<?php
+		
+		}
         
     }
     
@@ -477,7 +558,11 @@ class TW_Queue {
 	/**
 	 * Handles bulk actions
 	 *
+	 * @type function
+     * @date 04/03/2015
 	 * @since 0.3
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -509,7 +594,7 @@ class TW_Queue {
             }
 
             // build the redirect url
-            $sendback = add_query_arg( array('queued' => $queued ), $sendback );
+            $sendback = add_query_arg( array('queued' => $queued , 'post_type' => get_post_type( $post_id ) ), $sendback );
 
             break;
 
@@ -523,7 +608,7 @@ class TW_Queue {
             }
 
             // build the redirect url
-            $sendback = add_query_arg( array('dequeued' => $dequeued ), $sendback );
+            $sendback = add_query_arg( array('dequeued' => $dequeued, 'post_type' => get_post_type( $post_id ) ), $sendback );
             
             break;
             
@@ -537,7 +622,7 @@ class TW_Queue {
             }
 
             // build the redirect url
-            $sendback = add_query_arg( array('excluded' => $excluded ), $sendback );
+            $sendback = add_query_arg( array('excluded' => $excluded, 'post_type' => get_post_type( $post_id ) ), $sendback );
             
             break;
 
@@ -559,41 +644,45 @@ class TW_Queue {
 	/**
 	 * Display relevant notice after a bulk action has been performed
 	 *
+	 * @type function
+     * @date 04/03/2015
 	 * @since 0.3
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
     public function bulk_queue_admin_notice() {
  
-      global $post_type, $pagenow;
- 
-      // Posts queued
- 
-      if($pagenow == 'edit.php' && $post_type == 'post' &&
-         isset($_REQUEST['queued']) && (int) $_REQUEST['queued']) {
-        $message = sprintf( _n( 'Post queued.', '%s posts queued.', $_REQUEST['queued'] ), number_format_i18n( $_REQUEST['queued'] ) );
-        echo '<div class="updated"><p>' . $message . '</p></div>';
-      }
-      
-      // ...
-      
-      // Posts dequeued
-      
-      if($pagenow == 'edit.php' && $post_type == 'post' &&
-         isset($_REQUEST['dequeued']) && (int) $_REQUEST['dequeued']) {
-        $message = sprintf( _n( 'Post dequeued.', '%s posts dequeued.', $_REQUEST['dequeued'] ), number_format_i18n( $_REQUEST['dequeued'] ) );
-        echo '<div class="updated"><p>' . $message . '</p></div>';
-      }
-      
-      // ...
-      
-      // Posts excluded
-      
-      if($pagenow == 'edit.php' && $post_type == 'post' &&
-         isset($_REQUEST['excluded']) && (int) $_REQUEST['excluded']) {
-        $message = sprintf( _n( 'Post excluded.', '%s posts excluded.', $_REQUEST['excluded'] ), number_format_i18n( $_REQUEST['excluded'] ) );
-        echo '<div class="updated"><p>' .$message .'</p></div>';
-      }
+		global $post_type, $pagenow;
+
+		// Posts queued
+
+		if($pagenow == 'edit.php' && is_post_type_enabled( $post_type ) &&
+			isset($_REQUEST['queued']) && (int) $_REQUEST['queued']) {
+			$message = sprintf( _n( 'Post queued.', '%s posts queued.', $_REQUEST['queued'] ), number_format_i18n( $_REQUEST['queued'] ) );
+			echo '<div class="updated"><p>' . $message . '</p></div>';
+		}
+
+		// ...
+
+		// Posts dequeued
+
+		if($pagenow == 'edit.php' && is_post_type_enabled( $post_type ) &&
+			isset($_REQUEST['dequeued']) && (int) $_REQUEST['dequeued']) {
+			$message = sprintf( _n( 'Post dequeued.', '%s posts dequeued.', $_REQUEST['dequeued'] ), number_format_i18n( $_REQUEST['dequeued'] ) );
+			echo '<div class="updated"><p>' . $message . '</p></div>';
+		}
+
+		// ...
+
+		// Posts excluded
+
+		if($pagenow == 'edit.php' && is_post_type_enabled( $post_type ) &&
+			isset($_REQUEST['excluded']) && (int) $_REQUEST['excluded']) {
+			$message = sprintf( _n( 'Post excluded.', '%s posts excluded.', $_REQUEST['excluded'] ), number_format_i18n( $_REQUEST['excluded'] ) );
+			echo '<div class="updated"><p>' .$message .'</p></div>';
+		}
       
     }
     
@@ -602,7 +691,11 @@ class TW_Queue {
 	/**
 	 * Displays the queue of items
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -614,7 +707,7 @@ class TW_Queue {
         
         <div id="the-queue">
             <?php
-                
+
             if( '' != get_option( 'tw_last_tweet' ) ) :
                 
                 $tweet = get_option( 'tw_last_tweet' );
@@ -624,10 +717,14 @@ class TW_Queue {
                 <div class="the-queue-item tweeted">
                     <div class="post-header">
                         <span class="title"><?php echo isset( $tweet['title'] ) ? $tweet['title'] : get_the_title( $tweet['ID'] ); ?></span>
-                        <time>Tweeted <?php echo date( 'H:i:s d-m-y', get_option( 'tw_last_tweet_time' ) ); ?></time>
+                        <time>Tweeted <?php echo date( 'H:i:s d-m-y', $tweet['time'] ); ?></time>
                     </div>
                     <div class="post-content">
-                        <?php echo $tweet['text']; ?>
+                        <ul>
+                            <li>
+                                <?php echo $tweet['text']; ?>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             
@@ -641,7 +738,52 @@ class TW_Queue {
                         <?php $this->item_tools( $q->post_ID ); ?>
                     </div>
                     <div class="post-content">
-                        <?php echo TW()->tweet()->preview( $q->post_ID ); ?>
+                        <ul>
+                            <?php if ( TW()->tweet()->has_custom_templates( $q->post_ID ) ) : ?>
+                            
+                                <?php 
+                                    
+                                    $templates = TW()->tweet()->get_custom_templates( $q->post_ID );
+                                    
+                                    foreach( $templates as $t ) : 
+                            
+                                ?>
+                            
+                                    <li>
+                                        <?php echo TW()->tweet()->parse( $q->post_ID, $t ); ?>
+                                        <ul class="item-icons">
+                                        <?php 
+                                            if( 
+                                                TW()->tweet()->get_tweeting_order( $q->post_ID ) == 'order' && 
+                                                TW()->tweet()->get_next_template( $q->post_ID ) == $t
+                                            ) :
+                                        ?>
+                                            <li>
+                                                <span title="Next tweet's template" class="dashicons dashicons-clock"></span>
+                                            </li>
+                                        <?php endif; ?>
+                                            
+                                        <?php if( compare_tweet_templates( TW()->tweet()->get_last_tweeted_template( $q->post_ID ), $t ) ) : ?>
+                                            <li>
+                                                <span title="Recently tweeted template" class="dashicons dashicons-share"></span>
+                                            </li>
+                                        <?php endif; ?>
+                                        </ul>
+                                    </li>
+                            
+                                <?php endforeach; ?>
+                            
+                            <?php else : ?>
+                            
+                                <li><?php echo TW()->tweet()->parse( $q->post_ID, TW()->tweet()->get_default_template() ); ?></li>
+                            
+                            <?php endif; ?>
+                        </ul>
+                        <?php if( TW()->tweet()->has_multiple_templates( $q->post_ID ) ) : ?>
+                        
+                            <span class="show-all-templates dashicons dashicons-arrow-down"></span>
+                        
+                        <?php endif; ?>
                     </div>
                 </li>
             <?php endforeach; ?>
@@ -657,7 +799,11 @@ class TW_Queue {
 	/**
 	 * Empties the queue
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -674,7 +820,11 @@ class TW_Queue {
 	/**
 	 * Pauses the queue
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -689,7 +839,11 @@ class TW_Queue {
 	/**
 	 * Resumes the queue
 	 *
+	 * @type function
+     * @date 28/01/2015
 	 * @since 0.1
+     *
+     * @param n/a
 	 * @return n/a
 	 */
     
@@ -702,38 +856,51 @@ class TW_Queue {
     // ...
     
     /**
-     * Hooks
+     * Action on post publishing (from any status)
+     * Deals with default post exclusion from settings
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param int
+	 * @return n/a
      */
     
-    public function on_publish_post( $post_id ) {
+    public function on_publish_or_update( $post_id ) {
         
+        // Load meta once for performance...
+        $meta = get_post_meta( $post_id, 'tw_post_excluded' );
+
         // If new and should be excluded
         if(
-            wpsf_get_setting( 'tw_settings', 'global', 'queue_new_post' ) == 1 &&
-            get_post_meta( $post_id, 'post_exclude' ) == ''  
+            tw_get_option( 'tw_settings', 'queue_new_post' ) == 1 &&
+            $meta == ''  
         )
             return;
+			
+			
         
         // check if post is only just published...
         // I know the new_post hook, but this works just fine
         // if there is no post_meta simply means its fresh post
         // or is switching from excluded to included in the queue
         if( 
-            get_post_meta( $post_id, 'post_exclude' ) == '' && 
-            ! isset( $_POST['post_exclude'] ) ||
-            is_array( get_post_meta( $post_id, 'post_exclude' ) ) && 
-            ! isset( $_POST['post_exclude'] )
+            is_array( $meta ) && empty( $meta ) && 
+            ! isset( $_POST['tw_post_excluded'] ) ||
+            ! empty( $meta ) && 
+            ! isset( $_POST['tw_post_excluded'] )
         ) :
             $this->insert_post( $post_id, false, true );
             return;
         endif;
             
         
-        // Switching from included to excluded - queue it
+        // Switching from included to excluded - dequeue it
         if( 
-            is_array( get_post_meta( $post_id, 'post_exclude' ) ) && 
-            isset( $_POST['post_exclude'] ) &&
-            $_POST['post_exclude']['cmb-field-0'] == 1
+            ! empty( $meta ) && 
+            isset( $_POST['tw_post_excluded'] ) &&
+            $_POST['tw_post_excluded'] == 1
         ) 
             $this->remove_post( $post_id, true );
             
@@ -742,6 +909,18 @@ class TW_Queue {
     }
     
     // ...
+    
+    /**
+     * Action on unpublishing post
+     * Removes post from the queue
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param string | string | object
+	 * @return n/a
+     */
     
     public function on_unpublish_post( $new_status, $old_status, $post ) {
         
@@ -752,84 +931,18 @@ class TW_Queue {
         return;
         
     }
-    
+
     // ...
-    
-    public function cron_add_every_fifteen_minutes( $schedules ) {
-        
-     	// Adds every 15 minutes to the existing schedules.
-     	$schedules['fifteen_minutes'] = array(
-     		'interval' => 900,
-     		'display' => __( 'Every 15 Minutes' )
-     	);
-        
-     	return $schedules;
-        
-     }
-    
-    // ...
-    
-    public function cron() {
-    
-        if ( ! wp_next_scheduled( 'tw_cron_job' ) ) {
-            wp_schedule_event( time(), 'fifteen_minutes', 'tw_cron_job' );
-        }
-        
-    }   
-    
-    // ...
-    
-    public function run_queue() {
-        
-        do_action( 'tw_before_cron' );
-        
-        // If queue is paused...
-        if( 'running' != get_option( 'tw_queue_status' ) )
-            return;
-        
-        $interval = wpsf_get_setting( 'tw_settings', 'timing', 'post_interval' );
-        $last_tweet = get_option( 'tw_last_tweet_time' ) ? get_option( 'tw_last_tweet_time' ) : 0;
-        
-        $delay = $interval*60;
-        
-        // Prevents queue being ran to often. Let's not abuse the Tweet Wheel!
-        if( time() < $last_tweet + $delay ) :
-            do_action( 'tw_before_cron_too_often' );
-            return;
-        endif;
-        
-        if( TW()->queue()->has_queue_items() == true ) :
-
-            $queue_items = TW()->queue()->get_queued_items();
-
-            foreach( $queue_items as $q ) :
-
-                $response = TW()->tweet()->tweet( $q->post_ID );
-
-                // If no error and Tweet was published, break out of the loop 
-                if( $response != false ) :
-                    
-                    $tweet = TW()->tweet()->preview( $q->post_ID );
-        
-                    update_option( 'tw_last_tweet_time', time() );
-                    update_option( 'tw_last_tweet', array( 'ID' => $q->post_ID, 'title' => get_the_title( $q->post_ID ), 'text' => $tweet ) );
-                    
-                    break;
-                    
-                endif;
-            
-            endforeach;
-        
-        endif;
-        
-        do_action( 'tw_after_cron' );
-        
-        return false;
-    
-    }
     
     /**
-     * Conditions
+     * Checks if queue has items in it
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param n/a
+	 * @return boolean
      **/
         
     public function has_queue_items() {
@@ -846,6 +959,19 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+    /**
+     * Checks if given post is queued
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param int
+	 * @return boolean
+     */
+    
     public function is_item_queued( $post_id ) {
         
         global $wpdb;
@@ -861,12 +987,25 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+    /**
+     * Checks if given post is excluded from being added to the queue
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param int
+	 * @return boolean
+     */
+    
     public function is_item_excluded( $post_id ) {
         
         // If is excluded and is not forced
-        $excluded = get_post_meta( $post_id, 'post_exclude' );
+        $excluded = get_post_meta( $post_id, 'tw_post_excluded', true );
         
-        if( is_array( $excluded ) && isset( $excluded[0] ) && $excluded[0] == 1 )
+        if( $excluded == 1 )
             return true;
         
         return false;
@@ -876,7 +1015,14 @@ class TW_Queue {
     // ...
     
     /**
-     * All the Get's
+     * Retrieves all queued items
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param n/a
+	 * @return array | boolean
      */
     
     public function get_queued_items() {
@@ -891,11 +1037,37 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+    /**
+     * Retrieve queue status
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param n/a
+	 * @return string | null
+     */
+    
     public function get_queue_status() {
         
         return get_option( 'tw_queue_status' );
         
     }
+    
+    // ...
+    
+    /**
+     * Retrieve an item from bottom of the queue
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param n/a
+	 * @return array
+     */
     
     public function get_last_queued() {
         
@@ -912,6 +1084,19 @@ class TW_Queue {
         
     }
     
+    // ...
+    
+    /**
+     * Retrieve an item from top of the queue
+     *
+     * @type function
+     * @date 28/01/2015
+	 * @since 0.1
+     *
+     * @param n/a
+	 * @return array
+     */
+    
     public function get_first_queued_item() {
         
         global $wpdb;
@@ -926,10 +1111,10 @@ class TW_Queue {
 }
 
 /**
- * Returns the main instance of TW
+ * Returns the main instance of TW_Queue
  *
- * @since  0.0.1
- * @return TweetWheel
+ * @since  0.1
+ * @return TW_Queue
  */
 function TW_Queue() {
 	return TW_Queue::instance();

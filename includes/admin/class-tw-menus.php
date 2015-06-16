@@ -1,8 +1,30 @@
 <?php
 
+/**
+ * Main class TW_Menus
+ *
+ * The idea is to be the superior class handling menus.
+ * I wanted it to be extensible by hooks. Maybe it will come useful later.
+ *
+ * @class TW_Menus
+ */
+
 class TW_Menus {
     
     private $menus = array();
+    
+    // ...
+    
+    /**
+     * Class constructor
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function __construct() {
         
@@ -16,12 +38,22 @@ class TW_Menus {
         
         add_action( 'admin_menu', array( $this, 'menu' ), 10 );
         add_action( 'admin_menu', array( $this, 'submenu' ), 10 );
+        add_filter( 'tw_load_admin_menu', array( $this, 'submenu_pro' ), 9999, 1 );
         
     }
     
+    // ...
+    
     /**
-     * Add main Tweet Wheel plugin menu tab
-     */
+     * Adds main parent menu tab Tweet Wheel
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function menu() {
         
@@ -39,8 +71,15 @@ class TW_Menus {
     // ...
     
     /**
-     * Add submenus
-     */
+     * Add submenus. Here is where other classes add their own tabs.
+     *
+     * @type function
+     * @date 28/01/2015
+     * @since 0.1
+     *
+     * @param N/A
+     * @return N/A
+     **/
     
     public function submenu() {
         
@@ -64,6 +103,23 @@ class TW_Menus {
         
     }
     
+    public function submenu_pro( $menus ) {
+        
+        $menus[] = array(
+            'parent_slug' => 'tweetwheel',
+            'page_title' => 'Upgrade to Pro',
+            'menu_title' => 'Upgrade to Pro',
+            'capability' => 'administrator',
+            'menu_slug' => 'tw_upgrade_to_pro',
+            'function' => 'TW_Dashboard::upgrade',
+            'auth_only' => false
+        );
+        
+        return $menus;
+        
+    }
+    
 }
 
+// Initiate
 new TW_Menus;
