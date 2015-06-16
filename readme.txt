@@ -84,7 +84,7 @@ If you are having a trouble setting up Tweet Wheel feel free to use [the Support
 We would love to hear from you! In this case, [drop us a line](https://nerdcow.co.uk/contact-us) with a good description of your request and we will get back to you with a comment. 
 
 #### You are doing absolutely fabulous job. Can I support you?
-Your happiness is the best reward for our work! Although, if you feel like contributing, feel free to [buy us a pint of milk](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E) (we are nerd cows, you know...)
+Your happiness is the best reward for our work! Although, if you feel like contributing, feel free to [buy us a pint of milk](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E) (we are nerd cows, you know…).
 
 == Screenshots ==
 
