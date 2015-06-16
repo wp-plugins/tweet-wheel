@@ -45,7 +45,7 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * Lifetime upgrades
 * **Premium support**
 
-[CLICK HERE TO UPGRADE](http://codecanyon.net/item/tweet-wheel-pro-automated-tweeting-for-wordpress/11802003)
+[CLICK HERE TO UPGRADE](http://nrdd.co/upgrade_to_twp)
 
 **If upgrading, please uninstall free version first!**
 
