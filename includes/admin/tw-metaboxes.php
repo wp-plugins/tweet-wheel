@@ -317,3 +317,21 @@ function tw_save_tweet_templates_meta( $post_id, $post ) {
 
 // ...
 
+// ...
+
+/**
+ * Tweet Card - Checkbox in the Featured Image metabox
+ **/
+
+function tw_add_tweet_image( $content, $post_id ) {
+    
+    $populate = get_post_meta( $post_id, 'tweet_image', true );
+    
+    $content .= '<div class="upgrade-frame"><h4>Upgrade To Pro</h4><label><input readonly disabled type="checkbox"  value="1" ' . checked( $populate, 1, false ) . '> ' . __( 'Use as a tweet\'s image', 'tweetwheel' ) . '</label><span style="margin-top:5px;" class="section-note">Please note twitter requires a tweet image to be at least 280px by 150px in order for it to be used as a photo card.</span><a href="http://nrdd.co/upgrade_to_twp" target="_blank" class="upgrade-button">Upgrade Now</a></div>';
+    
+    return $content;
+    
+}
+
+add_filter( 'admin_post_thumbnail_html', 'tw_add_tweet_image', 10, 2 );
+

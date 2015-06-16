@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Tweet Wheel
+ * Plugin Name: Tweet Wheel Lite
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.5.1
+ * Version: 0.5.2
  * Author: Tomasz Lisiecki from Nerd Cow
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
- * Tested up to: 4.2.1
+ * Tested up to: 4.2.2
  *
  * Text Domain: tweetwheel
  * Domain Path: /i18n/languages/
@@ -35,7 +35,7 @@ final class TweetWheel {
     /**
      * @var string
      */
-    public $version = '0.5.1';
+    public $version = '0.5.2';
     
     // ...
     
@@ -92,7 +92,7 @@ final class TweetWheel {
 	 * @since 0.1
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'tweetwheel' ), '0.1' );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'tweetwheel' ), $this->version );
 	}
     
     // ...
@@ -103,7 +103,7 @@ final class TweetWheel {
 	 * @since 0.1
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'tweetwheel' ), '0.1' );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'tweetwheel' ), $this->version );
 	}
     
     // ...

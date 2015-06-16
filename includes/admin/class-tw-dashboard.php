@@ -179,6 +179,100 @@ class TW_Dashboard {
         
     }
     
+    // ...
+    
+    public static function upgrade() {
+
+        ?>
+        
+		<div class="wrap tweet-wheel about-wrap brap-wrap">
+            
+			<h1>Upgrade to Tweet Wheel PRO!</h1>
+        
+            <div class="about-text">
+                Tweet Wheel Pro brings new key features to promote your website on the whole level and includes <strong></strong>lifetime updates</strong> for one-off fee!
+            </div>
+            
+            <hr>
+               
+            <div class="feature-section two-col">
+                <div class="col">
+                    <h4>Attach Featured Images</h4>
+                    <p>Simply tick a checkbox next to the feature image upload for each post and our plugin will enrish your tweets with a photo card!</p>
+                    <a class="button tw-start-button" href="http://nrdd.co/upgrade_to_twp" target="_blank">UPGRADE NOW</a>
+                </div>
+
+                <div class="col">
+                    <img src="//i.imgur.com/Ff4dTYX.jpg">
+                </div>
+            </div>
+               
+            <div class="feature-section two-col">
+                <div class="col">
+                    <img src="//i.imgur.com/jZwsfTn.png">
+                </div>
+                
+                <div class="col">
+                    <h4>Fill Up the Queue Like a Pro</h4>
+                    <p>Import posts to the queue filtering all fo them by post type, amount and date range!</p>
+                    <a class="button tw-start-button" href="http://nrdd.co/upgrade_to_twp" target="_blank">UPGRADE NOW</a>
+                </div>
+            </div>
+                
+            <div class="feature-section two-col">
+                <div class="col">
+                    <h4>Shorten URLs</h4>
+                    <p>Authorise with Bit.ly -the most popular shortening URL website - and enjoy beautiful links being visible in all your tweets!</p>
+                    <a class="button tw-start-button" href="http://nrdd.co/upgrade_to_twp" target="_blank">UPGRADE NOW</a>
+                </div>
+
+                <div class="col">
+                    <img src="//i.imgur.com/Y0kG3zL.png">
+                </div>
+            </div>
+            
+            <div class="feature-section two-col">
+                <div class="col">
+                    <img src="//i.imgur.com/2bMbLJl.png">
+                </div>
+                
+                <div class="col">
+                    <h4>Track Results</h4>
+                    <p>Track engagement of all your tweet templates by analysing the Analytics page showing favorites, retweets and clicks.</p>
+                    <a class="button tw-start-button" href="http://nrdd.co/upgrade_to_twp" target="_blank">UPGRADE NOW</a>
+                </div>
+            </div>
+            
+            <div class="feature-section two-col">
+                <div class="col">
+                    <h4>Premium Support</h4>
+                    <p>We were there, we are here and we will be there for you! Now with fastest response and one-to-one support we can sort any issues in a blink of an eye.</p>
+                    <a class="button tw-start-button" href="http://nrdd.co/upgrade_to_twp" target="_blank">UPGRADE NOW</a>
+                </div>
+
+                <div class="col">
+                    <img src="//i.imgur.com/RnxvuzW.png">
+                </div>
+            </div>
+
+            <div class="feature-section two-col">
+                <div class="col">
+                    <img src="//i.imgur.com/mb6CktW.png">
+                </div>
+                
+                <div class="col">
+                    <h4>Lifetime Automated Upgrades</h4>
+                    <p>We introduced FREE lifetime upgrades so you can reap even more benefits as a loyal Tweet Wheel Pro user!</p>
+                    <a class="button tw-start-button" href="http://nrdd.co/upgrade_to_twp" target="_blank">UPGRADE NOW</a>
+                </div>
+            </div>
+            
+        </div>
+        
+        <?php
+        
+    }
+    
 }
 
 /**

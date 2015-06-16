@@ -2,8 +2,8 @@
 Contributors: NerdCow
 Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic, schedule, scheduling, timing, loop, custom post type, woocommerce, shop, products, easy digital downloads, portfolio, tweet content, pages, page, e-commerce
 Requires at least: 3.8
-Tested up to: 4.2
-Stable tag: 0.5.1
+Tested up to: 4.2.2
+Stable tag: 0.5.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -42,13 +42,14 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * **Track clicks** and tweets history of individual tweeted templates.
 * Fill up the queue using **filtering by date range, amount and post type**.
 * Plenty minor improvements which overally boost user experience and easy of use.
+* Lifetime upgrades
 * **Premium support**
 
 [CLICK HERE TO UPGRADE](http://codecanyon.net/item/tweet-wheel-pro-automated-tweeting-for-wordpress/11802003)
 
 **If upgrading, please uninstall free version first!**
 
-If you have a suggestion for improvement or a new feature, feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us)
+If you have a suggestion for improvement or a new feature, feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us).
 
 Want regular updates? Follow us on [Twitter](https://twitter.com/NerdCowUK) 
 
@@ -84,7 +85,7 @@ If you are having a trouble setting up Tweet Wheel feel free to use [the Support
 We would love to hear from you! In this case, [drop us a line](https://nerdcow.co.uk/contact-us) with a good description of your request and we will get back to you with a comment. 
 
 #### You are doing absolutely fabulous job. Can I support you?
-Your happiness is the best reward for our work! Although, if you feel like contributing, feel free to [buy us a pint of milk](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E) (we are nerd cows, you know...).
+Your happiness is the best reward for our work! Although, if you feel like contributing, feel free to [buy us a pint of milk](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E) (we are nerd cows, you know…).
 
 == Screenshots ==
 
@@ -96,6 +97,10 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 6. Health check page to make sure Tweet Wheel has everything it needs to run properly.
 
 == Changelog ==
+
+= 0.5.2 =
+* Bug fixes
+* Added an option to upgrade
 
 = 0.5.1 =
 * Fixed jQuery conflict with other plugins eg. MailPoet

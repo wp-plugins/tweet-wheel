@@ -38,6 +38,7 @@ class TW_Menus {
         
         add_action( 'admin_menu', array( $this, 'menu' ), 10 );
         add_action( 'admin_menu', array( $this, 'submenu' ), 10 );
+        add_filter( 'tw_load_admin_menu', array( $this, 'submenu_pro' ), 9999, 1 );
         
     }
     
@@ -99,6 +100,22 @@ class TW_Menus {
             add_submenu_page( $menu['parent_slug'], __( $menu['page_title'], 'tweetwheel' ), __( $menu['menu_title'], 'tweetwheel' ), $menu['capability'], $menu['menu_slug'], $menu['function'] );
             
         endforeach;
+        
+    }
+    
+    public function submenu_pro( $menus ) {
+        
+        $menus[] = array(
+            'parent_slug' => 'tweetwheel',
+            'page_title' => 'Upgrade to Pro',
+            'menu_title' => 'Upgrade to Pro',
+            'capability' => 'administrator',
+            'menu_slug' => 'tw_upgrade_to_pro',
+            'function' => 'TW_Dashboard::upgrade',
+            'auth_only' => false
+        );
+        
+        return $menus;
         
     }
     

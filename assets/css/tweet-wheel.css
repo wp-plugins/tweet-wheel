@@ -594,6 +594,39 @@
     color: #fff;
     border: 0px;
     text-transform: uppercase;
+    text-align: center;
+}
+
+.brap-wrap .tw-start-button.button {
+    font-size: 20px;
+    line-height: 50px;
+    height: auto;
+}
+
+.section-note {
+    display: block;
+    font-size: 12px;
+    color: #a1a1a1;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.upgrade-frame {
+    border: 1px solid darkorange;
+    padding: 5px;
+}
+
+.upgrade-frame h4 {
+    margin-top: 0px;
+    background: darkorange;
+    margin: -5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    color: #fff;
 }
 
 .about-wrap .headline-feature h2 { text-align: center; }
+
+#toplevel_page_tweetwheel li:last-child a {
+    color: darkorange !important;
+}
