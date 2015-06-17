@@ -37,6 +37,9 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 
 
 #### Upgrade to PRO
+
+[youtube https://www.youtube.com/watch?v=kiajt30Z480]
+
 * Attach **featured images** to your tweets with one click.
 * Use your favorite domain for **shortening URLs** (by Bit.ly).
 * **Track clicks** and tweets history of individual tweeted templates.
