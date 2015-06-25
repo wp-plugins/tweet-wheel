@@ -40,7 +40,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 		 * @param int     $input
 		 * @return int
 		 */
-		public function sanitize_number_field( $input )
+		public static function sanitize_number_field( $input )
 		{
 			$output = is_numeric( $input ) ? (float) $input : false;
 			return $input;
@@ -53,7 +53,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 		 * @param string  $input
 		 * @return string
 		 */
-		public function sanitize_textarea( $input )
+		public static function sanitize_textarea( $input )
 		{
 			global $allowedposttags;
 			$output = wp_kses( $input, $allowedposttags );
@@ -67,7 +67,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 		 * @param string  $input
 		 * @return string
 		 */
-		public function sanitize_wysiwyg( $input )
+		public static function sanitize_wysiwyg( $input )
 		{
 			return $input;
 		}
@@ -80,7 +80,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 		 * @param unknown $option
 		 * @return int
 		 */
-		public function sanitize_checkbox( $input, $option )
+		public static function sanitize_checkbox( $input, $option )
 		{
 			if ( !empty( $option['multiple'] ) ) {
 
@@ -112,7 +112,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 		 * @param array   $option
 		 * @return bool
 		 */
-		public function sanitize_enum( $input, $option )
+		public static function sanitize_enum( $input, $option )
 		{
 			$output = $input;
 
@@ -139,7 +139,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 		 * @param int     $option
 		 * @return int
 		 */
-		public function sanitize_select_pages( $input, $option )
+		public static function sanitize_select_pages( $input, $option )
 		{
 			$output = get_page( $input ) ? (int) $input : 0;
 			return $output;
@@ -147,7 +147,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
         
         // ...
         
-        public function sanitize_schedule_times( $input, $option ) { 
+        public static function sanitize_schedule_times( $input, $option ) { 
             
             $timestamps = array();
             $output = array();
@@ -184,7 +184,7 @@ if ( ! class_exists( 'SF_Sanitize' ) ) {
 	
 		// ...
 	
-	    public function sanitize_post_type( $input ) { 
+	    public static function sanitize_post_type( $input ) { 
 		
 	        return $input;
     

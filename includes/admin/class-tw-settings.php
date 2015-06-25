@@ -431,8 +431,19 @@ if ( ! class_exists( 'SF_Settings_API' ) ) {
 				<table class="form-table">
 
 				<?php
+				
 			foreach ( $options as $value ) :
-				SF_Format_Options::settings_options_format( $value );
+				
+				/*
+				 * This settings framework by Geczy has a bug, which I have found out about after deeply integrating it into plugin.
+				 * When WordPress is in the debug mode, this throws plenty of errors regarding misuse of a static method.
+				 * There is a ticket raised with an author on the GitHub repo, but no response ever since.
+				 * Since this is not a major issue, I will stick to this framework for a while, but I will be looking
+				 * forward to replace it when I find a better substitute.
+				 */
+				
+				@SF_Format_Options::settings_options_format( $value );
+				
 			endforeach;
 
 			do_action( $this->id . '_options_tab-' . $tabname );

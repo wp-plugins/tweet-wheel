@@ -206,3 +206,5 @@ function get_all_enabled_post_types( $format = null ) {
     return $data;
 
 }
+
+// ...
