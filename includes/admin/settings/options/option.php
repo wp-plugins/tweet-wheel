@@ -6,6 +6,17 @@ $options = array();
 $options[] = array( 'name' => __( 'General', 'tweet-wheel' ), 'type' => 'heading' );
 $options[] = array( 'name' => __( 'General options', 'tweet-wheel' ), 'type' => 'title', 'desc' => __( '', 'tweet-wheel' ) );
 
+/*
+$options[] = array(
+	'name' => __( 'Users access', 'tweet-wheel' ),
+	'desc' => __( 'Select which user roles can manage Tweet Wheel', 'tweet-wheel' ),
+	'id'   => 'user_role',
+	'desc' => sprintf( '<a style="color:darkorange" href="http://nrdd.co/upgrade_to_twp" target="_blank">%s</a>', __( 'Click here to upgrade to pro and manage users access!', 'tweet-wheel' ) ),
+	'type' => 'select',
+	'options' => array( __( 'Not available', 'tweet-wheel' ) )
+);
+*/
+
 $options[] = array(
 	'name' => __( 'Allowed post types', 'tweet-wheel' ),
 	'desc' => __( 'Select custom post types, which should be used by the plugin', 'tweet-wheel' ),

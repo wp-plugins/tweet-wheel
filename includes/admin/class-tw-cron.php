@@ -40,7 +40,7 @@ class TW_Cron {
      **/
     
     public function __construct() {
-        
+
         // Add 15 minutes cron job
         add_filter( 'cron_schedules', array( $this, 'interval' ), 10, 1 );
 
@@ -48,9 +48,8 @@ class TW_Cron {
         add_action( 'tweet_wheel', array( $this, 'task' ) );
         
         // ...
-        
-        if( $this->is_wp_cron_disabled() == true && ! get_transient( '_tw_wp_cron_alert_' . get_current_user_id() )  )
-            add_action( 'admin_notices', array( $this, 'cron_error_notice' ) );
+		
+		add_action( 'init', array( $this, 'cron_error' ) );
         
         add_action( 'wp_ajax_wp_cron_alert', 'ajax_wp_cron_alert' );
     }
@@ -154,6 +153,15 @@ class TW_Cron {
         return false;
     
     }
+	
+	// ...
+	
+	public function cron_error() {
+		
+		if( $this->is_wp_cron_disabled() == true && ! get_transient( '_tw_wp_cron_alert_' . get_current_user_id() )  )
+            add_action( 'admin_notices', array( $this, 'cron_error_notice' ) );
+		
+	}
     
     // ...
     

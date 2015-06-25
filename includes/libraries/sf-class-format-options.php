@@ -11,6 +11,7 @@
 if ( ! class_exists( 'SF_Format_Options' ) ) {
 
 	class SF_Format_Options extends SF_Settings_API {
+		
 
 		/**
 		 * Format an option array into HTML

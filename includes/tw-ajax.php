@@ -102,6 +102,7 @@ function ajax_hide_empty_queue_alert() {
 function ajax_wp_cron_alert() {
     
     check_admin_referer( 'tweet-wheel-nonce', 'twnonce' );
+	
 
     if ( current_user_can( 'manage_options' ) ) :
     

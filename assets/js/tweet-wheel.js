@@ -153,7 +153,8 @@ jQuery(function() {
             { 
                 action: 'wp_cron_alert', 
                 twnonce: TWAJAX.twNonce 
-            }
+            },
+			function(response) { console.log(response) }
         ); 
     });
     
