@@ -86,7 +86,7 @@ class TW_Tweet {
         foreach( $this->tags as $tag => $func ) :
         
             ?>
-            <?php echo strtoupper( $tag ); ?> : '<?php echo call_user_func( $func, $post_id, $tweet ); ?>'<?php echo $i != count($this->tags) ? ',' : ''; ?>
+            <?php echo strtoupper( $tag ); ?> : '<?php echo call_user_func( $func, $id ); ?>'<?php echo $i != count($this->tags) ? ',' : ''; ?>
             <?php
             
             $i++;
@@ -574,7 +574,7 @@ new TW_Tweet;
  * @return N/A
  **/
 
-function tw_tweet_parse_url( $post_id, $tweet ) {
+function tw_tweet_parse_url( $post_id ) {
 
     return get_permalink( $post_id );
     
@@ -593,7 +593,7 @@ function tw_tweet_parse_url( $post_id, $tweet ) {
  * @return N/A
  **/
 
-function tw_tweet_parse_title( $post_id, $tweet ) {
+function tw_tweet_parse_title( $post_id ) {
     
     return html_entity_decode(get_the_title($post_id),ENT_QUOTES,'UTF-8');
     

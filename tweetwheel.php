@@ -3,13 +3,13 @@
  * Plugin Name: Tweet Wheel Lite
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.5.3
+ * Version: 0.5.4
  * Author: Tomasz Lisiecki from Nerd Cow Ltd.
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
  * Tested up to: 4.2.2
  *
- * Text Domain: tweet-wheel
+ * Text Domain: tweetwheel
  *
  * @package Tweet Wheel
  * @category Core
@@ -26,7 +26,7 @@ if ( ! class_exists( 'TweetWheel' ) ) :
  * Main TweetWheel Class
  *
  * @class TweetWheel
- * @version	0.5.3
+ * @version	0.5.4
  */
     
 final class TweetWheel {
@@ -34,7 +34,7 @@ final class TweetWheel {
     /**
      * @var string
      */
-    public $version = '0.5.3';
+    public $version = '0.5.4';
     
     // ...
     

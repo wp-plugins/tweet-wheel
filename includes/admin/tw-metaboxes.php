@@ -333,5 +333,5 @@ function tw_add_tweet_image( $content, $post_id ) {
     
 }
 
-add_filter( 'admin_post_thumbnail_html', 'tw_add_tweet_image', 10, 2 );
-
+if( TW()->twitter()->is_authed() )
+    add_filter( 'admin_post_thumbnail_html', 'tw_add_tweet_image', 10, 2 );
