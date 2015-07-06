@@ -15,8 +15,12 @@
  * @since 0.4
  */
 
-add_action( 'load-post.php', 'tw_post_meta_boxes_setup' );
-add_action( 'load-post-new.php', 'tw_post_meta_boxes_setup' );
+if( TW()->twitter()->is_authed() ) :
+
+	add_action( 'load-post.php', 'tw_post_meta_boxes_setup' );
+	add_action( 'load-post-new.php', 'tw_post_meta_boxes_setup' );
+
+endif;
 
 // ...
 
