@@ -3,7 +3,6 @@
 /**
  * Dashboard class
  *
- * @TODO: Eventually, this will be an actual dashboard with useful widgets and shortcuts, but for now let's leave it as About page.
  */
 
 class TW_Dashboard {
@@ -76,7 +75,7 @@ class TW_Dashboard {
             
             <div class="changelog point-releases">
             	<h3>What's new</h3>
-            	<p><strong>Now Tweet Wheel handles custom post types meaning you can promote your shop products, portfolio, pages and many more!</strong><br/><strong>Version <?php echo TW_VERSION; ?></strong> introduces some improvements! For more information, see <a href="https://wordpress.org/plugins/tweet-wheel/changelog/" target="_blank">the changelog notes</a>. 	</p>
+            	<p><strong>Version <?php echo TW_VERSION; ?></strong> introduces some improvements! For more information, see <a href="https://wordpress.org/plugins/tweet-wheel/changelog/" target="_blank">the changelog notes</a>. 	</p>
             </div>
 
             <div class="headline-feature">
