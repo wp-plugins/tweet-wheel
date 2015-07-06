@@ -93,7 +93,7 @@ jQuery(document).ready(function() {
 
 	        if(jQuery(form).valid()) {
 	            jQuery("#publishing-action .spinner").show();
-	            send.click();
+	            return true;
 	        } else {
 	            jQuery("#publishing-action .spinner").hide();
 	            jQuery('html, body').animate({
