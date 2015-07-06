@@ -273,11 +273,11 @@ function tw_save_tweet_templates_meta( $post_id, $post ) {
     $post_type = get_post_type_object( $post->post_type );
 
     /* Check if the current user has permission to edit the post. */
-    if ( !current_user_can( $post_type->cap->edit_post, $post_id ) )
+    if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) )
         return $post_id;
 
     /* Get the posted data and sanitize it for use as an HTML class. */
-    $new_meta_value = $_POST['tw_post_templates'];
+    $new_meta_value = isset( $_POST['tw_post_templates'] ) ? $_POST['tw_post_templates'] : '';
     
     $sorted = array();
     
