@@ -111,7 +111,7 @@ function tw_tweet_settings_meta_box( $object, $box ) {
                 // if new post and should be excluded by default
                 if( 
                     tw_get_option( 'tw_settings', 'queue_new_post' ) == 1 &&
-                    get_post_meta( $_GET['post'], 'tw_post_exclude' ) == ''
+                    @get_post_meta( $_GET['post'], 'tw_post_exclude' ) == ''
                 ) :
     
                 ?>
@@ -173,7 +173,7 @@ function tw_save_tweet_settings_meta( $post_id, $post ) {
         return $post_id;
 
     /* Get the posted data and sanitize it for use as an HTML class. */
-    $post_excluded = $_POST['tw_post_excluded'];
+	$post_excluded = isset( $_POST['tw_post_excluded'] ) ? $_POST['tw_post_excluded'] : '';
     $tweet_order = $_POST['tw_templates_order'];
 
     update_post_meta( $post_id, 'tw_post_excluded', $post_excluded );
