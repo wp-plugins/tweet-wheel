@@ -65,42 +65,46 @@ jQuery(document).ready(function() {
     );
     
     // ...
+
+	// Hook the script only to post types that are used by the plugin
+	if( jQuery.inArray( typenow, TWAJAX.post_types ) !== -1 ) {
     
-    // Some WP hacking to skip the bug with posts not being published (just saved as drafts)
-    // more: http://wordpress.stackexchange.com/questions/119814/validating-custom-meta-boxes-with-jquery-results-in-posts-being-saved-as-draft-i
+	    // Some WP hacking to skip the bug with posts not being published (just saved as drafts)
+	    // more: http://wordpress.stackexchange.com/questions/119814/validating-custom-meta-boxes-with-jquery-results-in-posts-being-saved-as-draft-i
 
-    var form = jQuery("#post");
-    var send = jQuery(form).find("#publish");
+	    var form = jQuery("#post");
+	    var send = form.find("#publish");
     
-    send.after('<span id="tw-submit" style="cursor:pointer" class="button button-primary button-large">'+send.val()+'</span>');
-    send.hide();
+	    send.addClass('tw-submit');
 
-    jQuery('#tw-submit').click(function(e){
+	    jQuery('.tw-submit').click(function(e){
 
-        jQuery(form).validate();
+	        form.validate();
 
-        jQuery('.tweet-template-textarea').each(function(){
+	        jQuery('.tweet-template-textarea').each(function(){
 
-            jQuery(this).rules("add",{
-                required : true,
-                tweetFit : true,
-                tweetURL : true
-            });
+	            jQuery(this).rules("add",{
+	                required : true,
+	                tweetFit : true,
+	                tweetURL : true
+	            });
 
-        });
+	        });
 
-        if(jQuery(form).valid()) {
-            jQuery("#publishing-action .spinner").show();
-            send.click();
-        } else {
-            jQuery("#publishing-action .spinner").hide();
-            jQuery('html, body').animate({
-                scrollTop: jQuery(".tweet-template-textarea.error").offset().top
-            }, 2000);
-        }
+	        if(jQuery(form).valid()) {
+	            jQuery("#publishing-action .spinner").show();
+	            return true;
+	        } else {
+	            jQuery("#publishing-action .spinner").hide();
+	            jQuery('html, body').animate({
+	                scrollTop: jQuery(".tweet-template-textarea.error").offset().top
+	            }, 2000);
+	        }
 
-        return false;
+	        return false;
 
-    });
+	    });
+	
+	}
 
 });

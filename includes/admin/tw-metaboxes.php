@@ -15,8 +15,12 @@
  * @since 0.4
  */
 
-add_action( 'load-post.php', 'tw_post_meta_boxes_setup' );
-add_action( 'load-post-new.php', 'tw_post_meta_boxes_setup' );
+if( TW()->twitter()->is_authed() ) :
+
+	add_action( 'load-post.php', 'tw_post_meta_boxes_setup' );
+	add_action( 'load-post-new.php', 'tw_post_meta_boxes_setup' );
+
+endif;
 
 // ...
 
@@ -111,7 +115,7 @@ function tw_tweet_settings_meta_box( $object, $box ) {
                 // if new post and should be excluded by default
                 if( 
                     tw_get_option( 'tw_settings', 'queue_new_post' ) == 1 &&
-                    get_post_meta( $_GET['post'], 'tw_post_exclude' ) == ''
+                    @get_post_meta( $_GET['post'], 'tw_post_exclude' ) == ''
                 ) :
     
                 ?>
@@ -173,7 +177,7 @@ function tw_save_tweet_settings_meta( $post_id, $post ) {
         return $post_id;
 
     /* Get the posted data and sanitize it for use as an HTML class. */
-    $post_excluded = $_POST['tw_post_excluded'];
+	$post_excluded = isset( $_POST['tw_post_excluded'] ) ? $_POST['tw_post_excluded'] : '';
     $tweet_order = $_POST['tw_templates_order'];
 
     update_post_meta( $post_id, 'tw_post_excluded', $post_excluded );
@@ -273,11 +277,11 @@ function tw_save_tweet_templates_meta( $post_id, $post ) {
     $post_type = get_post_type_object( $post->post_type );
 
     /* Check if the current user has permission to edit the post. */
-    if ( !current_user_can( $post_type->cap->edit_post, $post_id ) )
+    if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) )
         return $post_id;
 
     /* Get the posted data and sanitize it for use as an HTML class. */
-    $new_meta_value = $_POST['tw_post_templates'];
+    $new_meta_value = isset( $_POST['tw_post_templates'] ) ? $_POST['tw_post_templates'] : '';
     
     $sorted = array();
     
