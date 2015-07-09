@@ -40,12 +40,15 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 
 [youtube https://www.youtube.com/watch?v=kiajt30Z480]
 
+**The all-new importer let's you move all your settings to the pro version with a single click!**
+
 * Attach **featured images** to your tweets with one click.
 * Use your favorite domain for **shortening URLs** (by Bit.ly).
 * **Track clicks** and tweets history of individual tweeted templates.
 * Fill up the queue using **filtering by date range, amount and post type**.
 * Plenty minor improvements which overally boost user experience and easy of use.
 * Lifetime upgrades
+* Seamless data migration to the pro version using built-in importer
 * **Premium support**
 
 [CLICK HERE TO UPGRADE](http://nrdd.co/upgrade_to_twp)
