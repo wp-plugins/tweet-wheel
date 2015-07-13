@@ -35,7 +35,6 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * Simple view which minifies the queue look so you can fit more items on your screen - helpful for shuffling!
 * Health check tab that let's you know if your website is ready for Tweet Wheel and what to fix.
 
-
 #### Upgrade to PRO
 
 [youtube https://www.youtube.com/watch?v=kiajt30Z480]
@@ -55,7 +54,7 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 
 [CLICK HERE TO UPGRADE](http://nrdd.co/upgrade_to_twp)
 
-**If upgrading, please uninstall free version first!**
+[Online Documentation](http://tweet-wheel.com/)
 
 If you have a suggestion for improvement or a new feature, feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us).
 
@@ -83,17 +82,7 @@ Navigate to Plugins > Upload New Plugin and upload the zip file you have downloa
 
 == Frequently Asked Questions ==
 
-#### Can I get banned by Twitter for using Tweet Wheel?
-It is as likely as you were tweeting yourself. Tweet Wheel is 100% safe tool to use as long as you do not abuse it's purpose. Whether you tweet yourself or use our plugin to do so, you still need to obey to The Twitter Rules. Read more  [here](https://support.twitter.com/articles/18311-the-twitter-rules).
-
-#### Where can I get support?
-If you are having a trouble setting up Tweet Wheel feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us).
-
-#### I have a brilliant idea. Where can I suggest it?
-We would love to hear from you! In this case, [drop us a line](https://nerdcow.co.uk/contact-us) with a good description of your request and we will get back to you with a comment. 
-
-#### You are doing absolutely fabulous job. Can I support you?
-Your happiness is the best reward for our work! Although, if you feel like contributing, feel free to [buy us a pint of milk](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E) (we are nerd cows, you know…).
+[http://tweet-wheel.com/docs/faq/](http://tweet-wheel.com/docs/faq/)
 
 == Screenshots ==
 
