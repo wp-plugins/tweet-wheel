@@ -3,7 +3,7 @@ Contributors: NerdCow
 Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic, schedule, scheduling, timing, loop, custom post type, woocommerce, shop, products, easy digital downloads, portfolio, tweet content, pages, page, e-commerce
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 0.5.6
+Stable tag: 0.5.7
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -95,6 +95,9 @@ Navigate to Plugins > Upload New Plugin and upload the zip file you have downloa
 
 == Changelog ==
 
+= 0.5.7 =
+* Fixed a bug which caused all textareas being affected by autosize library using in the plugin
+
 = 0.5.6 =
 * Hid plugin's metaboxes on edit screens from unauthorised users
 
@@ -124,7 +127,6 @@ Navigate to Plugins > Upload New Plugin and upload the zip file you have downloa
 * Fixed bug which prevented to delete scheduled times
 
 = 0.4 =
-
 * Added multi-templating for posts
 * Added precise scheduling of posts
 * Added health check page to verify settings of WordPress installation
