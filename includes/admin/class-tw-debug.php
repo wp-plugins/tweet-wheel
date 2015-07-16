@@ -1,9 +1,5 @@
 <?php
 
-// Include dependencies
-
-require (ABSPATH . WPINC . '/pluggable.php');
-
 /**
  * Main class TW_Debug
  */

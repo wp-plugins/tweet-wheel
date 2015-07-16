@@ -13,7 +13,7 @@ jQuery(function(){
     // Count characters and display on page load
     jQuery(window).load(function(){
 
-        jQuery('textarea').autosize();
+        jQuery('.tweet-template-textarea').autosize().grab();
 
     });
 
