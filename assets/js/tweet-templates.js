@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
 
         i++;                                                          
         // reinitialise autosize for textareas
-        jQuery('textarea').autosize();
+        jQuery('.tweet-template-textarea').autosize();
 
     } );
 

@@ -3,7 +3,7 @@
  * Plugin Name: Tweet Wheel Lite
  * Plugin URI: http://www.tweetwheel.com
  * Description: A powerful tool that keeps your Twitter profile active. Even when you are busy.
- * Version: 0.5.6
+ * Version: 0.5.9
  * Author: Tomasz Lisiecki from Nerd Cow Ltd.
  * Author URI: https://nerdcow.co.uk
  * Requires at least: 3.8
@@ -22,11 +22,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'TweetWheel' ) ) :
 
+include_once( 'includes/install.php' );
+include_once( 'includes/uninstall.php' );
+
+// Install
+register_activation_hook( __FILE__, 'tw_install' );
+
+// Activation
+register_activation_hook( __FILE__, 'tw_activate' );
+
+// Uninstall
+register_uninstall_hook( __FILE__, 'tw_uninstall' );
+
 /**
  * Main TweetWheel Class
  *
  * @class TweetWheel
- * @version	0.5.6
+ * @version	0.5.8
  */
     
 final class TweetWheel {
@@ -34,7 +46,7 @@ final class TweetWheel {
     /**
      * @var string
      */
-    public $version = '0.5.6';
+    public $version = '0.5.9';
     
     // ...
     
@@ -126,15 +138,10 @@ final class TweetWheel {
         // Load dependencies
         $this->includes();
         
-        // Install
-        register_activation_hook( __FILE__, 'tw_install' );
-        register_activation_hook( __FILE__, 'tw_after_activate' );
-        
-        // Uninstall
-        register_uninstall_hook( __FILE__, 'tw_uninstall' );
-        
         // Hooks
         add_action( 'admin_init', array( $this, 'redirect' ) );
+        
+        tw_schedule_task();
         
         // Init plugin
         add_action( 'init', array( $this, 'init' ) );
@@ -194,8 +201,6 @@ final class TweetWheel {
     private function includes() {
         
         // initial stuff
-        include_once( 'includes/install.php' );
-        include_once( 'includes/uninstall.php' );
         include_once( 'includes/helpers.php' );
         
         // Fundamental settings
@@ -273,7 +278,7 @@ final class TweetWheel {
         // Other JS Libraries
         wp_register_script( 'autosize', TW_PLUGIN_URL . '/assets/js/autosize.js' );
         wp_enqueue_script( 'autosize' );
-  
+        
         wp_register_script( 'validate', TW_PLUGIN_URL . '/assets/js/jquery.validate.min.js' );
         wp_enqueue_script( 'validate' );
         

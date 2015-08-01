@@ -376,7 +376,7 @@ class TW_Schedule {
         // turn into full valid timestamp including date
         foreach( $times as $t ) :
 
-            $dates[] = strtotime( 'today midnight' ) + $t;
+            $dates[] = strtotime( 'today midnight', current_time( 'timestamp' ) ) + $t;
         
         endforeach;
         

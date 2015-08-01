@@ -3,22 +3,16 @@ Contributors: NerdCow
 Tags: auto tweeting, auto tweet, automated tweeting, blog, blogging, cron, feed, social, timeline, twitter, tweet, publish, free, google, manage, post, posts, pages, plugin, seo, profile, sharing, social, social follow, social following, social share, social media, community, wp cron, traffic, optimization, conversion, drive traffic, schedule, scheduling, timing, loop, custom post type, woocommerce, shop, products, easy digital downloads, portfolio, tweet content, pages, page, e-commerce
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 0.5.6
+Stable tag: 0.5.9
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Automated and redefined post tweeting for every Wordpress website. Precisely schedule your posts for tweeting using various and engaging templates.
+Tweet Wheel plugin helps you to share your WordPress posts, pages, products and any post type on Twitter automatically without your supervision.
 
 == Description ==
 
-**Since version 0.5 Tweet Wheel handles custom post types meaning you can tweet about whatever type of content you like: blog entries, shop products, portfolio items and whatever you wish!**
-
-Tweet Wheel is a simple and yet powerful tool that every website owner will fall in love with. The idea behind Tweet Wheel is to automatically tweet posts from users' website and take the burden off their shoulders and let them focus on the thing they are best at. Turn your website into a traffic-and-business-driving tool in no time!
-
-First, install and activate the plugin. You may notice not many options visible at start, but it's only until you authorise our Twitter app to access your Twitter account. Once authorised, you can enjoy your website gaining on social media attention even when you are not looking.
-
-Unlike other Twitter plugins, this one works automatically and does not require your constant care. You can get up and running in a few clicks, but if you want to make more out of our solution, you can add multiple, interesting templates for each post. This will reduce your chance of sounding robotic and will let you test headings to see which one comes the most engaging.
+**Tweet Wheel** plugin helps you to share your WordPress posts, pages, products and any post type on Twitter automatically without your supervision. Promote your WordPress website on Twitter by tweeting regularly to earn more followers and drive more traffic.
 
 **Current features**
 
@@ -35,22 +29,26 @@ Unlike other Twitter plugins, this one works automatically and does not require 
 * Simple view which minifies the queue look so you can fit more items on your screen - helpful for shuffling!
 * Health check tab that let's you know if your website is ready for Tweet Wheel and what to fix.
 
-
 #### Upgrade to PRO
 
 [youtube https://www.youtube.com/watch?v=kiajt30Z480]
 
+**The all-new importer let's you move all your settings to the pro version with a single click!**
+
 * Attach **featured images** to your tweets with one click.
 * Use your favorite domain for **shortening URLs** (by Bit.ly).
+* Tweet on post publish or update.
+* Enjoy the **mobile-friendly** interface.
 * **Track clicks** and tweets history of individual tweeted templates.
 * Fill up the queue using **filtering by date range, amount and post type**.
+* Seamless **data migration** to the pro version using built-in importer
 * Plenty minor improvements which overally boost user experience and easy of use.
 * Lifetime upgrades
 * **Premium support**
 
 [CLICK HERE TO UPGRADE](http://nrdd.co/upgrade_to_twp)
 
-**If upgrading, please uninstall free version first!**
+[Online Documentation](http://tweet-wheel.com/)
 
 If you have a suggestion for improvement or a new feature, feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us).
 
@@ -78,17 +76,7 @@ Navigate to Plugins > Upload New Plugin and upload the zip file you have downloa
 
 == Frequently Asked Questions ==
 
-#### Can I get banned by Twitter for using Tweet Wheel?
-It is as likely as you were tweeting yourself. Tweet Wheel is 100% safe tool to use as long as you do not abuse it's purpose. Whether you tweet yourself or use our plugin to do so, you still need to obey to The Twitter Rules. Read more  [here](https://support.twitter.com/articles/18311-the-twitter-rules).
-
-#### Where can I get support?
-If you are having a trouble setting up Tweet Wheel feel free to use [the Support forum](https://wordpress.org/support/plugin/tweet-wheel) or contact us directly via [our website](https://nerdcow.co.uk/contact-us).
-
-#### I have a brilliant idea. Where can I suggest it?
-We would love to hear from you! In this case, [drop us a line](https://nerdcow.co.uk/contact-us) with a good description of your request and we will get back to you with a comment. 
-
-#### You are doing absolutely fabulous job. Can I support you?
-Your happiness is the best reward for our work! Although, if you feel like contributing, feel free to [buy us a pint of milk](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SCXXGUX47LL4E) (we are nerd cows, you know…).
+[http://tweet-wheel.com/docs/faq/](http://tweet-wheel.com/docs/faq/)
 
 == Screenshots ==
 
@@ -100,6 +88,17 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 6. Health check page to make sure Tweet Wheel has everything it needs to run properly.
 
 == Changelog ==
+
+= 0.5.9 =
+* Improved compatibility and precision of the Schedule in various timezones - plugin will now use your local time to control the timing.
+* Forced WP Cron jobs to be setup by the plugin. Some users experienced troubles with tweets going out. This update should fix it.
+* Improved compatibility with WooZone - WooCommerce Amazon Affiliates plugin.
+
+= 0.5.8 =
+* Fixed compatibility issue with the wpMandrill plugin
+
+= 0.5.7 =
+* Fixed a bug which caused all textareas being affected by autosize library using in the plugin
 
 = 0.5.6 =
 * Hid plugin's metaboxes on edit screens from unauthorised users
@@ -130,7 +129,6 @@ Your happiness is the best reward for our work! Although, if you feel like contr
 * Fixed bug which prevented to delete scheduled times
 
 = 0.4 =
-
 * Added multi-templating for posts
 * Added precise scheduling of posts
 * Added health check page to verify settings of WordPress installation
