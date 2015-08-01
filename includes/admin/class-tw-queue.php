@@ -239,7 +239,7 @@ class TW_Queue {
         if( ! is_array( $item_tools ) || empty( $item_tools ) )
             return;
         
-        echo '<div class="queue-item-sidebar clear">';
+        echo '<div class="queue-item-sidebar">';
         
         echo '<ul class="queue-item-tools">';
         

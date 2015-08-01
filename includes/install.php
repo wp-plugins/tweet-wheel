@@ -97,7 +97,7 @@ function tw_load_settings() {
  * @return N/A
  **/
 
-function tw_after_activate() {
+function tw_activate() {
     add_option('tw_activation_redirect', true);
 }
 
@@ -117,6 +117,6 @@ function tw_after_activate() {
 function tw_schedule_task() {
     
     if( ! wp_next_scheduled( 'tweet_wheel' ) )
-        wp_schedule_event( time(), 'minutely', 'tweet_wheel' );
+        wp_schedule_event( current_time( 'timestamp' ), 'minutely', 'tweet_wheel' );
 
 }  
